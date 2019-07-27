@@ -17,17 +17,21 @@ public class Orders {
 
     private String orderNumber;
 
-    private String status;
+    private int status;
+
+    private String customerId;
 
     private String carNumber;
 
+    private String fetchPosition;
+
     private String parkingLotId;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:MM:ss")
-    private Date parkingTime;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:MM:ss")
-    private Date fetchingTime;
+    private long parkingTime;
+
+
+    private long fetchingTime;
 
 
     private String parkingBoyId;
@@ -38,15 +42,12 @@ public class Orders {
     public Orders() {
     }
 
-    public Orders(String orderNumber, String status, String carNumber, String parkingLotId, Date parkingTime, Date fetchingTime, String parkingBoyId, String fetchingBoyId) {
+    public Orders(String orderNumber, int status, String customerId, String carNumber, String fetchPosition) {
         this.orderNumber = orderNumber;
         this.status = status;
+        this.customerId = customerId;
         this.carNumber = carNumber;
-        this.parkingLotId = parkingLotId;
-        this.parkingTime = parkingTime;
-        this.fetchingTime = fetchingTime;
-        this.parkingBoyId = parkingBoyId;
-        this.fetchingBoyId = fetchingBoyId;
+        this.fetchPosition = fetchPosition;
     }
 
     public String getId() {
@@ -65,11 +66,11 @@ public class Orders {
         this.orderNumber = orderNumber;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -89,19 +90,19 @@ public class Orders {
         this.parkingLotId = parkingLotId;
     }
 
-    public Date getParkingTime() {
+    public long getParkingTime() {
         return parkingTime;
     }
 
-    public void setParkingTime(Date parkingTime) {
+    public void setParkingTime(long parkingTime) {
         this.parkingTime = parkingTime;
     }
 
-    public Date getFetchingTime() {
+    public long getFetchingTime() {
         return fetchingTime;
     }
 
-    public void setFetchingTime(Date fetchingTime) {
+    public void setFetchingTime(long fetchingTime) {
         this.fetchingTime = fetchingTime;
     }
 
@@ -119,5 +120,21 @@ public class Orders {
 
     public void setFetchingBoyId(String fetchingBoyId) {
         this.fetchingBoyId = fetchingBoyId;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getFetchPosition() {
+        return fetchPosition;
+    }
+
+    public void setFetchPosition(String fetchPosition) {
+        this.fetchPosition = fetchPosition;
     }
 }
