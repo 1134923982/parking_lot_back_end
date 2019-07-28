@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 
+import static com.oocl.ita.parkinglot.enums.CodeMsgEnum.PARAMETER_ERROR;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -60,7 +61,7 @@ public class EmployeeControllerTest {
         mockMvc.perform(get("/employees/{id}/parking-lots","0")
                 .header("token",SecurityUtils.getTestToken()))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(jsonPath("$.retCode").value(PARAMETER_ERROR.getCode()));
 
     }
     @Test

@@ -49,7 +49,7 @@ public class OrdersControllerTest {
         mockMvc.perform(get("/orders").header("token",SecurityUtils.getTestToken()))
 
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));
+                .andExpect(jsonPath("$.data.length()").value(2));
 
     }
 

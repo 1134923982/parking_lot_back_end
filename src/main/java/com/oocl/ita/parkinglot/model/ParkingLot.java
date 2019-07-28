@@ -2,7 +2,6 @@ package com.oocl.ita.parkinglot.model;
 
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.UUID;
 
@@ -14,7 +13,7 @@ public class ParkingLot {
 
     private String name;
 
-    private String postion;
+    private String position;
 
     private int capacity;
 
@@ -23,9 +22,9 @@ public class ParkingLot {
     public ParkingLot() {
     }
 
-    public ParkingLot(String name, String postion, int capacity, int nowAvailable) {
+    public ParkingLot(String name, String position, int capacity, int nowAvailable) {
         this.name = name;
-        this.postion = postion;
+        this.position = position;
         this.capacity = capacity;
         this.nowAvailable = nowAvailable;
     }
@@ -46,12 +45,12 @@ public class ParkingLot {
         this.name = name;
     }
 
-    public String getPostion() {
-        return postion;
+    public String getPosition() {
+        return position;
     }
 
-    public void setPostion(String postion) {
-        this.postion = postion;
+    public void setPosition(String position) {
+        this.position = position;
     }
 
     public int getCapacity() {

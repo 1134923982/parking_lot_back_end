@@ -24,9 +24,9 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping("/employees/{id}/parking-lots")
-    public ResponseEntity getEmployeeAllParkingLots(@PathVariable(value = "id") String id){
+    public ResultVO<List<ParkingLot>> getEmployeeAllParkingLots(@PathVariable(value = "id") String id){
         List<ParkingLot> employeeAllParkingLots = employeeService.getEmployeeAllParkingLots(id);
-        return (employeeAllParkingLots == null) ? ResponseEntity.badRequest().build() : ResponseEntity.ok(employeeAllParkingLots);
+        return (employeeAllParkingLots == null) ? ResultVO.error(PARAMETER_ERROR) : ResultVO.success(employeeAllParkingLots);
     }
 
     @GetMapping("/employees/{employeeId}")

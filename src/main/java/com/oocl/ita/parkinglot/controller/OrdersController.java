@@ -5,6 +5,7 @@ import com.oocl.ita.parkinglot.annotation.Auth;
 import com.oocl.ita.parkinglot.enums.RoleEnum;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
+import com.oocl.ita.parkinglot.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +23,9 @@ public class OrdersController {
     private OrdersRepository ordersRepository;
 
     @GetMapping
-    public ResponseEntity getAllOrders () {
-        return ResponseEntity.ok(ordersRepository.findAllNotReceiptOrders());
+    public ResultVO<List<Orders>> getAllOrders () {
+        List<Orders> allNotReceiptOrders = ordersRepository.findAllNotReceiptOrders();
+        return ResultVO.success(allNotReceiptOrders);
     }
 
 
