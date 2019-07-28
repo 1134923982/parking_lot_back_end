@@ -33,10 +33,14 @@ public class Orders {
     private long fetchingTime;
 
 
-    private String parkingBoyId;
+    @OneToOne
+    @JoinColumn(name = "parkingBoyId")
+    private Employee parkingBoy;
 
 
-    private String fetchingBoyId;
+    @OneToOne
+    @JoinColumn(name = "fetchingBoyId")
+    private Employee fetchingBoy;
 
     public Orders() {
     }
@@ -113,21 +117,22 @@ public class Orders {
         this.fetchingTime = fetchingTime;
     }
 
-    public String getParkingBoyId() {
-        return parkingBoyId;
+    public Employee getParkingBoy() {
+        return parkingBoy;
     }
 
-    public void setParkingBoyId(String parkingBoyId) {
-        this.parkingBoyId = parkingBoyId;
+    public void setParkingBoy(Employee parkingBoy) {
+        this.parkingBoy = parkingBoy;
     }
 
-    public String getFetchingBoyId() {
-        return fetchingBoyId;
+    public Employee getFetchingBoy() {
+        return fetchingBoy;
     }
 
-    public void setFetchingBoyId(String fetchingBoyId) {
-        this.fetchingBoyId = fetchingBoyId;
+    public void setFetchingBoy(Employee fetchingBoy) {
+        this.fetchingBoy = fetchingBoy;
     }
+
 
     public Customer getCustomerId() {
         return customer;
