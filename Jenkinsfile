@@ -15,6 +15,7 @@ cp /gradleConfig/application.yml /root/.jenkins/workspace/parking_lot_back_end_m
     }
     stage('Deploy To Staging') {
       steps {
+
         sh '''scp -i /keys/null.pem /root/.jenkins/workspace/parking_lot_back_end_master/build/libs/parkinglot-0.0.1-SNAPSHOT.jar centos@3.112.193.240:/workspace/BackEnd
 ssh centos@3.112.193.240 -i /keys/null.pem > /dev/null 2>&1 <<\\ eeooff
 
@@ -33,6 +34,7 @@ sudo nohup java -jar dev.jar >run.txt 2>&1 &
 exit
 eeooff
 '''
+
       }
     }
   }
