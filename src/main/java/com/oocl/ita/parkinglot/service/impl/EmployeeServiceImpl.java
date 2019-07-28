@@ -1,4 +1,4 @@
-package com.oocl.ita.parkinglot.service.ServiceImpl;
+package com.oocl.ita.parkinglot.service.impl;
 
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.ParkingLot;
@@ -24,5 +24,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     public List<ParkingLot> getEmployeeAllParkingLots(String parkingBoyId) {
         Employee employee = employeeRepository.findById(parkingBoyId).orElse(null);
         return (employee == null) ? null : employee.getParkingLots();
+    }
+
+    @Override
+    public Employee getEmployeeById(String employeeId) {
+        return employeeRepository.findById(employeeId).orElse(null);
     }
 }

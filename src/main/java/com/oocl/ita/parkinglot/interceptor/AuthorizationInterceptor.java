@@ -18,10 +18,10 @@ import java.io.PrintWriter;
 import static com.oocl.ita.parkinglot.enums.CodeMsgEnum.TOKENCAN_EXCEPTION;
 import static com.oocl.ita.parkinglot.enums.CodeMsgEnum.TOKEN_EXCEPTION;
 
-
 /** 
  * 拦截器必须实现HandlerInterceptor接口
- * */ 
+ *@author Gordon
+ * */
 public class AuthorizationInterceptor implements HandlerInterceptor {
 
 	private static final String[] IGNORE_URI = {"/register", "/login"};

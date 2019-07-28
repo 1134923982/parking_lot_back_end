@@ -1,8 +1,8 @@
 package com.oocl.ita.parkinglot.controller;
 
+import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.ParkingLot;
 import com.oocl.ita.parkinglot.service.EmployeeService;
-import com.oocl.ita.parkinglot.service.ServiceImpl.EmployeeServiceImpl;
 import com.oocl.ita.parkinglot.utils.SecurityUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -63,6 +62,17 @@ public class EmployeeControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
+    }
+    @Test
+    public void should_return_employee_when_request_by_employee_id() throws Exception {
+        Employee employee = new Employee();
+        employee.setId("1");
+        employee.setTelephone("13867549756");
+        when(employeeService.getEmployeeById(anyString())).thenReturn(employee);
+        mockMvc.perform(get("/employees/{id}","1")
+                .header("token",SecurityUtils.getTestToken()))
+                .andDo(print())
+                .andExpect(jsonPath("$.data.telephone").value(employee.getTelephone()));
     }
 
 }

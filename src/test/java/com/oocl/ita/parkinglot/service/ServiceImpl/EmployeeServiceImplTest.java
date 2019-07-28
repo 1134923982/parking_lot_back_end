@@ -32,8 +32,6 @@ public class EmployeeServiceImplTest {
     @Autowired
     private EmployeeService employeeService;
 
-
-
     @Test
     public void should_get_employee_all_parkinglots_when_employee_is_exist() {
         ParkingLot firstParkingLot = new ParkingLot();
@@ -59,7 +57,17 @@ public class EmployeeServiceImplTest {
         when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
         List<ParkingLot> findParkingLots = employeeService.getEmployeeAllParkingLots("0");
         assertNull(findParkingLots);
-
     }
+
+    @Test
+    public void should_return_employee_by_id(){
+        Employee employee = new Employee();
+        employee.setId("1");
+        employee.setTelephone("13587671359");
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
+        Employee reEmployee = employeeService.getEmployeeById("1");
+        assertEquals(reEmployee.getTelephone(),employee.getTelephone());
+    }
+
 
 }
