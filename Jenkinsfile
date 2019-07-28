@@ -27,7 +27,7 @@ sudo kill -9 $p
 
 JENKINS_NODE_COOKIE=dontKillMe
 
-sudo nohup java -jar pro.jar >run.txt 2>&1 &
+nohup java -jar pro.jar >run.txt 2>&1 &
 
 
 exit
