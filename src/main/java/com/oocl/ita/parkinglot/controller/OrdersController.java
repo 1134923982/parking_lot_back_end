@@ -1,6 +1,8 @@
 package com.oocl.ita.parkinglot.controller;
 
 
+import com.oocl.ita.parkinglot.annotation.Auth;
+import com.oocl.ita.parkinglot.enums.RoleEnum;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,7 @@ public class OrdersController {
     @Autowired
     private OrdersRepository ordersRepository;
 
-    @GetMapping("/Orders")
+    @GetMapping("/orders")
     public ResponseEntity getAllOrders () {
         return ResponseEntity.ok(ordersRepository.findAllNotReceiptOrders());
     }
