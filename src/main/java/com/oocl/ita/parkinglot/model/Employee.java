@@ -1,8 +1,7 @@
 package com.oocl.ita.parkinglot.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -27,6 +26,9 @@ public class Employee {
     private int status;
 
     private String managedId;
+
+    @ManyToMany
+    private List<ParkingLot> parkingLots;
 
     public Employee() {
     }
@@ -121,5 +123,13 @@ public class Employee {
 
     public void setManagedId(String managedId) {
         this.managedId = managedId;
+    }
+
+    public List<ParkingLot> getParkingLots() {
+        return parkingLots;
+    }
+
+    public void setParkingLots(List<ParkingLot> parkingLots) {
+        this.parkingLots = parkingLots;
     }
 }

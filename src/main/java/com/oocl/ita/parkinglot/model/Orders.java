@@ -2,10 +2,7 @@ package com.oocl.ita.parkinglot.model;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
@@ -19,7 +16,8 @@ public class Orders {
 
     private int status;
 
-    private String customerId;
+    @ManyToOne
+    private Customer customer;
 
     private String carNumber;
 
@@ -42,10 +40,10 @@ public class Orders {
     public Orders() {
     }
 
-    public Orders(String orderNumber, int status, String customerId, String carNumber, String fetchPosition) {
+    public Orders(String orderNumber, int status, Customer customer, String carNumber, String fetchPosition) {
         this.orderNumber = orderNumber;
         this.status = status;
-        this.customerId = customerId;
+        this.customer = customer;
         this.carNumber = carNumber;
         this.fetchPosition = fetchPosition;
     }
@@ -122,12 +120,12 @@ public class Orders {
         this.fetchingBoyId = fetchingBoyId;
     }
 
-    public String getCustomerId() {
-        return customerId;
+    public Customer getCustomerId() {
+        return customer;
     }
 
     public void setCustomerId(String customerId) {
-        this.customerId = customerId;
+        this.customer = customer;
     }
 
     public String getFetchPosition() {

@@ -44,10 +44,12 @@ public class OrdersControllerTest {
 
         when(ordersRepository.findAllNotReceiptOrders()).thenReturn(orders);
 
-        mockMvc.perform(get("/Orders"))
+        mockMvc.perform(get("/orders"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
 
     }
+
+
 }
