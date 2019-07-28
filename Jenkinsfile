@@ -3,7 +3,8 @@ pipeline {
   stages {
     stage('Replace application.yml') {
       steps {
-        sh 'cp /gradleConfig/application.yml /root/.jenkins/workspace/parking_lot_back_end_dev/src/main/resources/application.yml'
+        sh '''mkdir /root/.jenkins/workspace/parking_lot_back_end_dev/src/main/resources
+cp /gradleConfig/application.yml /root/.jenkins/workspace/parking_lot_back_end_dev/src/main/resources/application.yml'''
       }
     }
     stage('Gradle Build') {
