@@ -23,7 +23,8 @@ public class Orders {
 
     private String fetchPosition;
 
-    private String parkingLotId;
+    @ManyToOne
+    private ParkingLot parkingLot;
 
 
     private long parkingTime;
@@ -80,12 +81,20 @@ public class Orders {
         this.carNumber = carNumber;
     }
 
-    public String getParkingLotId() {
-        return parkingLotId;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setParkingLotId(String parkingLotId) {
-        this.parkingLotId = parkingLotId;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public ParkingLot getParkingLot() {
+        return parkingLot;
+    }
+
+    public void setParkingLot(ParkingLot parkingLot) {
+        this.parkingLot = parkingLot;
     }
 
     public long getParkingTime() {
