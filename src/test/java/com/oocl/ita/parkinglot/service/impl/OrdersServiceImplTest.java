@@ -38,7 +38,7 @@ public class OrdersServiceImplTest {
     @Test
     public void should_return_updated_order_parking_boy_accept_park_order() {
         Orders orders = new Orders();
-        orders.setOrderId("123");
+        orders.setId("123");
 
         Customer customer = new Customer();
         customer.setUserName("test");
@@ -60,7 +60,7 @@ public class OrdersServiceImplTest {
     @Test
     public void should_return_updated_order_parking_boy_update_order_status() {
         Orders orders = new Orders();
-        orders.setOrderId("123");
+        orders.setId("123");
         orders.setStatus(1);
 
         Customer customer = new Customer();

@@ -13,6 +13,4 @@ public interface OrdersRepository extends JpaRepository<Orders , String> {
 
     @Query(value = "select * from Orders where status = 0 or status = 3", nativeQuery = true)
     List<Orders> findAllNotReceiptOrders();
-
-    Orders findByOrderId(String orderId);
 }

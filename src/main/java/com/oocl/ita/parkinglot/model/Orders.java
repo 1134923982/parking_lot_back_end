@@ -7,8 +7,7 @@ import java.util.UUID;
 public class Orders {
 
     @Id
-    @Column(name = "orderId")
-    private String orderId = UUID.randomUUID().toString();
+    private String id = UUID.randomUUID().toString();
 
     private String orderNumber;
 
@@ -51,12 +50,12 @@ public class Orders {
         this.fetchPosition = fetchPosition;
     }
 
-    public String getOrderId() {
-        return orderId;
+    public String getId() {
+        return id;
     }
 
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getOrderNumber() {
