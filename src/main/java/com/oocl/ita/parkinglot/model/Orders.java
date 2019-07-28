@@ -1,16 +1,14 @@
 package com.oocl.ita.parkinglot.model;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
 public class Orders {
 
     @Id
-    private String id = UUID.randomUUID().toString();
+    @Column(name = "orderId")
+    private String orderId = UUID.randomUUID().toString();
 
     private String orderNumber;
 
@@ -23,7 +21,8 @@ public class Orders {
 
     private String fetchPosition;
 
-    private String parkingLotId;
+    @ManyToOne
+    private ParkingLot parkingLot;
 
 
     private long parkingTime;
@@ -32,10 +31,14 @@ public class Orders {
     private long fetchingTime;
 
 
-    private String parkingBoyId;
+    @OneToOne
+    @JoinColumn(name = "parkingBoyId")
+    private Employee parkingBoy;
 
 
-    private String fetchingBoyId;
+    @OneToOne
+    @JoinColumn(name = "fetchingBoyId")
+    private Employee fetchingBoy;
 
     public Orders() {
     }
@@ -48,12 +51,12 @@ public class Orders {
         this.fetchPosition = fetchPosition;
     }
 
-    public String getId() {
-        return id;
+    public String getOrderId() {
+        return orderId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
     public String getOrderNumber() {
@@ -80,12 +83,20 @@ public class Orders {
         this.carNumber = carNumber;
     }
 
-    public String getParkingLotId() {
-        return parkingLotId;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setParkingLotId(String parkingLotId) {
-        this.parkingLotId = parkingLotId;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public ParkingLot getParkingLot() {
+        return parkingLot;
+    }
+
+    public void setParkingLot(ParkingLot parkingLot) {
+        this.parkingLot = parkingLot;
     }
 
     public long getParkingTime() {
@@ -104,21 +115,22 @@ public class Orders {
         this.fetchingTime = fetchingTime;
     }
 
-    public String getParkingBoyId() {
-        return parkingBoyId;
+    public Employee getParkingBoy() {
+        return parkingBoy;
     }
 
-    public void setParkingBoyId(String parkingBoyId) {
-        this.parkingBoyId = parkingBoyId;
+    public void setParkingBoy(Employee parkingBoy) {
+        this.parkingBoy = parkingBoy;
     }
 
-    public String getFetchingBoyId() {
-        return fetchingBoyId;
+    public Employee getFetchingBoy() {
+        return fetchingBoy;
     }
 
-    public void setFetchingBoyId(String fetchingBoyId) {
-        this.fetchingBoyId = fetchingBoyId;
+    public void setFetchingBoy(Employee fetchingBoy) {
+        this.fetchingBoy = fetchingBoy;
     }
+
 
     public Customer getCustomerId() {
         return customer;
