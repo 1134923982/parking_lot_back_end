@@ -3,12 +3,12 @@ package com.oocl.ita.parkinglot.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.UUID;
 
 @Entity
 public class Customer {
     @Id
-    @GeneratedValue
-    private String id;
+    private String id = UUID.randomUUID().toString();
 
     private String userName;
 

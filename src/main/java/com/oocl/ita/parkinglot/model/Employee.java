@@ -3,14 +3,12 @@ package com.oocl.ita.parkinglot.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.UUID;
 
 @Entity
 public class Employee {
     @Id
-    @GeneratedValue
-    private String id;
-
-    private String userName;
+    private String id = UUID.randomUUID().toString();
 
     private String password;
 
@@ -50,13 +48,8 @@ public class Employee {
         this.id = id;
     }
 
-    public String getUserName() {
-        return userName;
-    }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+
 
     public String getPassword() {
         return password;

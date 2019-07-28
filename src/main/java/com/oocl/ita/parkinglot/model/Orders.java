@@ -7,13 +7,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 public class Orders {
 
     @Id
-    @GeneratedValue
-    private String id;
+    private String id = UUID.randomUUID().toString();
 
     private String orderNumber;
 
