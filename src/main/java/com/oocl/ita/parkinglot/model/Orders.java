@@ -1,16 +1,14 @@
 package com.oocl.ita.parkinglot.model;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
 public class Orders {
 
     @Id
-    private String id = UUID.randomUUID().toString();
+    @Column(name = "orderId")
+    private String orderId = UUID.randomUUID().toString();
 
     private String orderNumber;
 
@@ -53,12 +51,12 @@ public class Orders {
         this.fetchPosition = fetchPosition;
     }
 
-    public String getId() {
-        return id;
+    public String getOrderId() {
+        return orderId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
     public String getOrderNumber() {

@@ -1,0 +1,18 @@
+package com.oocl.ita.parkinglot.enums;
+
+public enum OrdersStatusEnum {
+
+    PARK_ORDER_NOT_RECEIVED,
+
+    PARK_ORDER_RECEIVED,
+
+    PARK_ORDER_PICKED_UP_THE_CAR,
+
+    PARK_ORDER_CAR_IS_PARKED_AND_FETCH_ORDER_NOT_RECEIVED,
+
+    FETCH_ORDER_RECEIVED,
+
+    FETCH_ORDER_PICKED_UP_THE_CAR,
+
+    FETCH_ORDER_COMPLETED;
+}

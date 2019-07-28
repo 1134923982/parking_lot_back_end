@@ -1,4 +1,4 @@
-package com.oocl.ita.parkinglot.service.ServiceImpl;
+package com.oocl.ita.parkinglot.service.impl;
 
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.ParkingLot;
