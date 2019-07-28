@@ -23,4 +23,10 @@ public class SecurityUtils {
         return JwtToken.decode(getToken(),Employee.class);
     }
 
+    public static String getTestToken(){
+        Employee employee = new Employee();
+        employee.setRole(2);
+        return JwtToken.encode(employee);
+    }
+
 }

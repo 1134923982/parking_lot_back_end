@@ -2,6 +2,8 @@ package com.oocl.ita.parkinglot.controller;
 
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
+import com.oocl.ita.parkinglot.utils.SecurityUtils;
+import org.apache.catalina.security.SecurityUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,10 +46,12 @@ public class OrdersControllerTest {
 
         when(ordersRepository.findAllNotReceiptOrders()).thenReturn(orders);
 
-        mockMvc.perform(get("/Orders"))
-                .andDo(print())
+        mockMvc.perform(get("/orders").header("token",SecurityUtils.getTestToken()))
+
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
 
     }
+
+
 }
