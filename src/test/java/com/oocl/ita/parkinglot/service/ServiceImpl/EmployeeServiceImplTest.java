@@ -53,4 +53,13 @@ public class EmployeeServiceImplTest {
 
     }
 
+    @Test
+    public void should_return_null_when_employee_is_not_exist() {
+        Employee employee = new Employee();
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
+        List<ParkingLot> findParkingLots = employeeService.getEmployeeAllParkingLots("0");
+        assertNull(findParkingLots);
+
+    }
+
 }
