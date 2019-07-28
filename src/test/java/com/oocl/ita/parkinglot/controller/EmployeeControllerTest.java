@@ -1,6 +1,7 @@
 package com.oocl.ita.parkinglot.controller;
 
 import com.oocl.ita.parkinglot.model.Employee;
+import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.model.ParkingLot;
 import com.oocl.ita.parkinglot.service.EmployeeService;
 
@@ -78,6 +79,29 @@ public class EmployeeControllerTest {
                 .header("token",SecurityUtils.getTestToken()))
                 .andDo(print())
                 .andExpect(jsonPath("$.data.telephone").value(employee.getTelephone()));
+    }
+
+    @Test
+    public void should_return_employee_All_unfinish_orders_when_employee_is_exist() throws Exception {
+        Employee parkingBoy = new Employee();
+        parkingBoy.setRole(1);
+        Orders firstOrder = new Orders();
+        firstOrder.setParkingBoy(parkingBoy);
+        Orders secondOrder = new Orders();
+        secondOrder.setParkingBoy(parkingBoy);
+        Orders thirdOrder = new Orders();
+        thirdOrder.setFetchingBoy(parkingBoy);
+        ArrayList<Orders> orders = new ArrayList<>();
+        orders.add(firstOrder);
+        orders.add(secondOrder);
+        orders.add(thirdOrder);
+
+        when(employeeService.getEmployeeUnfinishOrders(anyString())).thenReturn(orders);
+
+        mockMvc.perform(get("/employees/{id}/orders","1").param("finish","finish")
+                .header("token",SecurityUtils.getTestToken()))
+                .andDo(print())
+                .andExpect(jsonPath("$.data.length()").value(3));
     }
 
 }

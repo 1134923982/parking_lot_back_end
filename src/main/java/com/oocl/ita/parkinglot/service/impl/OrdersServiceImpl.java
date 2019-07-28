@@ -62,7 +62,9 @@ public class OrdersServiceImpl implements OrdersService {
         ordersVO.setFetchingTime(orders.getFetchingTime());
         ordersVO.setFetchPosition(orders.getFetchPosition());
         ordersVO.setParkingLotPosition(orders.getParkingLot().getPosition());
+        ordersVO.setParkingLotName(orders.getParkingLot().getName());
         ordersVO.setStatus(orders.getStatus());
+        ordersVO.setParkingTime(orders.getParkingTime());
 
         return ordersVO;
     }

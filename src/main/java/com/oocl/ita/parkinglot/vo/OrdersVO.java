@@ -14,6 +14,10 @@ public class OrdersVO {
 
     private Long fetchingTime;
 
+    private Long parkingTime;
+
+    private String parkingLotName;
+
     private int status;
 
     public OrdersVO(String carNumber, String customerName, String customerTelephone, String fetchPosition, String parkingLotPosition, Long fetchingTime) {
@@ -82,5 +86,21 @@ public class OrdersVO {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public Long getParkingTime() {
+        return parkingTime;
+    }
+
+    public void setParkingTime(Long parkingTime) {
+        this.parkingTime = parkingTime;
+    }
+
+    public String getParkingLotName() {
+        return parkingLotName;
+    }
+
+    public void setParkingLotName(String parkingLotName) {
+        this.parkingLotName = parkingLotName;
     }
 }
