@@ -40,4 +40,6 @@ public class OrdersController {
     public ResultVO updateOrder (@RequestBody UpdateOrdersStatusDTO dto) {
         return ResultVO.success(ordersService.updateOrders(dto.getOrderId(), dto.getParkingBoyId(), dto.getParkingLotId()));
     }
+
+
 }
