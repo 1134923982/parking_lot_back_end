@@ -8,6 +8,7 @@ import com.oocl.ita.parkinglot.service.EmployeeService;
 import com.oocl.ita.parkinglot.utils.SecurityUtils;
 
 import com.oocl.ita.parkinglot.vo.ParkingLotVO;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -31,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
