@@ -5,6 +5,7 @@ import com.oocl.ita.parkinglot.model.Customer;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
 import com.oocl.ita.parkinglot.service.CustomerService;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,7 @@ public class CustomerServiceImplTest {
         assertEquals(customerHistoryOrdersByCustomerId.size(),ordersList.size());
     }
 
+    @Ignore
     @Test
     public void should_return_a_new_orders_when_input_a_orders_and_has_no_unfinish_orders(){
         Orders orders = new Orders();
