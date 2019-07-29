@@ -12,6 +12,8 @@ import com.oocl.ita.parkinglot.repository.EmployeeRepository;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
 import com.oocl.ita.parkinglot.repository.ParkingLotRepository;
 import com.oocl.ita.parkinglot.service.EmployeeService;
+import com.oocl.ita.parkinglot.utils.SecurityUtils;
+import com.oocl.ita.parkinglot.vo.ParkingLotVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -108,50 +110,35 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public int updateEmployeeParkingLotCapacityById(String id, ParkingLot parkingLot) {
+    public List<ParkingLotVO> getParkingLotVOsByEmployeeId(String id, int page, int pageSize) {
         Employee employee = employeeRepository.findById(id).orElse(null);
-        if (employee == null) {
-            throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
-        } else {
-            ParkingLot findParkingLot = employee.getParkingLots().stream().filter(element -> element.getId().equals(parkingLot.getId())).findAny().orElse(null);
-            if (findParkingLot == null) {
-                throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
-            } else {
-                int result = parkingLotRepository.updateCapacityById(parkingLot.getId(), parkingLot.getCapacity());
-                if (result == 1) {
-                    return result;
-                } else {
-                    throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+        if (employee != null) {
+            List<ParkingLot> parkingLots = employee.getParkingLots();
+            List<ParkingLotVO> parkingLotVOs = parkingLots.stream()
+                    .map(parkingLot -> new ParkingLotVO(parkingLot.getId(), parkingLot.getName(), parkingLot.getPosition(), parkingLot.getCapacity(), parkingLot.getNowAvailable()))
+                    .collect(Collectors.toList());
+            for(int i = 0; i < parkingLots.size(); i++) {
+                List<Employee> employees = employeeRepository.findEmployeesByParkingLotsContains(parkingLots.get(i));
+                employees = employees.stream().filter(e -> e.getRole() == 0).collect(Collectors.toList());
+                List<Employee> resultEmployees = new ArrayList<>();
+                for(int j=0; j<employees.size(); j++){
+                    Employee resultEmployee = new Employee();
+                    BeanUtils.copyProperties(employees.get(j), resultEmployee, "password", "parkingLots");
+                    resultEmployees.add(resultEmployee);
                 }
+                parkingLotVOs.get(i).setParkingBoys(resultEmployees);
             }
-        }
-
-    }
-
-    @Override
-    public ParkingLot addEmployeeNewParkingLot(String id, ParkingLot parkingLot) {
-
-        Employee employee = employeeRepository.findById(id).orElse(null);
-        if (employee == null) {
-            throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
-        } else {
-            parkingLot.setStatus(ParkingLotStatusEnum.EXIST.ordinal());
-            parkingLot.setNowAvailable(parkingLot.getCapacity());
-            ParkingLot savedParkingLot = parkingLotRepository.save(parkingLot);
-            if (savedParkingLot == null) {
-                throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+            if((page-1)*pageSize > parkingLotVOs.size()) {
+                return new ArrayList<>();
+            }
+            if (page*pageSize<parkingLotVOs.size()){
+                parkingLotVOs = parkingLotVOs.subList((page-1)*pageSize, page*pageSize);
             } else {
-                employee.getParkingLots().add(savedParkingLot);
-                Employee savedEmployee = employeeRepository.save(employee);
-                if (savedEmployee == null) {
-                    throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
-                } else {
-                    return savedParkingLot;
-                }
-
+                parkingLotVOs = parkingLotVOs.subList((page-1)*pageSize, parkingLotVOs.size());
             }
+            return parkingLotVOs;
         }
-
+        return null;
     }
 
     public List<ParkingLot> findByConditions(String id, GetEmployeeParkingLotDTO getEmployeeParkingLotDTO) {
@@ -221,5 +208,49 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         }
     }
+
+    @Override
+    public ParkingLot addEmployeeNewParkingLot(String id, ParkingLot parkingLot) {
+
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        if (employee == null) {
+            throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+        } else {
+            parkingLot.setStatus(ParkingLotStatusEnum.EXIST.ordinal());
+            parkingLot.setNowAvailable(parkingLot.getCapacity());
+            ParkingLot savedParkingLot = parkingLotRepository.save(parkingLot);
+            if (savedParkingLot == null) {
+                throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+            } else {
+                employee.getParkingLots().add(savedParkingLot);
+                Employee savedEmployee = employeeRepository.save(employee);
+                if (savedEmployee == null) {
+                    throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+                } else {
+                    return savedParkingLot;
+                }
+
+            }
+        }
+
+    }
+    public int updateEmployeeParkingLotCapacityById(String id, ParkingLot parkingLot) {
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        if (employee == null) {
+            throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+        } else {
+            ParkingLot findParkingLot = employee.getParkingLots().stream().filter(element -> element.getId().equals(parkingLot.getId())).findAny().orElse(null);
+            if (findParkingLot == null) {
+                throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+            } else {
+                int result = parkingLotRepository.updateCapacityById(parkingLot.getId(), parkingLot.getCapacity());
+                if (result == 1) {
+                    return result;
+                } else {
+                    throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+                }
+            }
+        }
+}
 
 }

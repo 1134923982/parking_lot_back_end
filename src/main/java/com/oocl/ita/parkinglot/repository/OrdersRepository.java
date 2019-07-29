@@ -22,4 +22,10 @@ public interface OrdersRepository extends JpaRepository<Orders , String> {
 
     @Query(value = "select * from Orders where fetching_boy_id = :id and status = 6", nativeQuery = true)
     List<Orders> findEmployeeFetchingFinishOrders(@Param(value = "id") String id);
+
+    @Query(value = "select * from Orders where customer_id = :id and status = 6", nativeQuery = true)
+    List<Orders> findByCustomer_IdAndStatusIsFinish(@Param(value = "id") String id);
+
+    @Query(value = "select * from Orders where customer_id = :id and status < 6", nativeQuery = true)
+    List<Orders> findByCustomer_IdAndStatusIsUnFinish(@Param(value = "id") String id);
 }

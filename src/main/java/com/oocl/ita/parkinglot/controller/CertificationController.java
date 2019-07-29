@@ -29,7 +29,7 @@ public class CertificationController {
         }
     }
 
-    @PostMapping("/customer/login")
+    @PostMapping("/customers/login")
     public ResultVO<String> customerLogin(@RequestBody Customer customer){
         Customer reCustomer = certificationService.customerLogin(customer);
         if(reCustomer!=null) {
@@ -39,7 +39,7 @@ public class CertificationController {
         }
     }
 
-    @PostMapping("/customer/register")
+    @PostMapping("/customers/register")
     public ResultVO<String> customerResister(@RequestBody Customer customer){
         return ResultVO.success(certificationService.customerRegister(customer));
     }

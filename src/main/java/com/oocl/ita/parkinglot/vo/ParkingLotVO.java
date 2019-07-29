@@ -1,14 +1,15 @@
-package com.oocl.ita.parkinglot.model;
+package com.oocl.ita.parkinglot.vo;
 
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import com.oocl.ita.parkinglot.model.Employee;
+
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-@Entity
-public class ParkingLot {
+public class ParkingLotVO {
 
-    @Id
     private String id = UUID.randomUUID().toString();
 
     private String name;
@@ -19,25 +20,25 @@ public class ParkingLot {
 
     private int nowAvailable;
 
-    private int status;
+    private List<Employee> parkingBoys = new ArrayList<>();
 
-    public ParkingLot() {
+    public ParkingLotVO() {
     }
 
-    public ParkingLot(String name, String position, int capacity, int nowAvailable) {
-        this.name = name;
-        this.position = position;
-        this.capacity = capacity;
-        this.nowAvailable = nowAvailable;
-    }
-
-    public ParkingLot(String id, String name, String position, int capacity, int nowAvailable, int status) {
+    public ParkingLotVO(String id, String name, String position, int capacity, int nowAvailable) {
         this.id = id;
         this.name = name;
         this.position = position;
         this.capacity = capacity;
         this.nowAvailable = nowAvailable;
-        this.status = status;
+    }
+
+    public List<Employee> getParkingBoys() {
+        return parkingBoys;
+    }
+
+    public void setParkingBoys(List<Employee> parkingBoys) {
+        this.parkingBoys = parkingBoys;
     }
 
     public String getId() {
@@ -78,13 +79,5 @@ public class ParkingLot {
 
     public void setNowAvailable(int nowAvailable) {
         this.nowAvailable = nowAvailable;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 }
