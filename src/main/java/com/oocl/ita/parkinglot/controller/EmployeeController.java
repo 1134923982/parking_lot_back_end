@@ -1,6 +1,5 @@
 package com.oocl.ita.parkinglot.controller;
 
-import com.oocl.ita.parkinglot.annotation.Auth;
 import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
 import com.oocl.ita.parkinglot.enums.RoleEnum;
 import com.oocl.ita.parkinglot.model.Employee;
@@ -45,8 +44,6 @@ public class EmployeeController {
             return ResultVO.error(PARAMETER_ERROR);
         }
     }
-
-    @Auth(RoleEnum.admin)
     @GetMapping("/employees/{id}/orders")
     public ResultVO<List<Orders>> getEmployeeOrdersByFinishStatus(@PathVariable(value = "id") String id, @RequestParam(value = "finish") boolean finish) {
         List<Orders> orders = employeeService.getEmployeeOrdersByFinish(id, finish);
