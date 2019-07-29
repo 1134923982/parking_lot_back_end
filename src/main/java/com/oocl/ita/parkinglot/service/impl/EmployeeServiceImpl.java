@@ -1,5 +1,6 @@
 package com.oocl.ita.parkinglot.service.impl;
 
+import com.oocl.ita.parkinglot.dto.GetEmployeeParkingLotDTO;
 import com.oocl.ita.parkinglot.enums.CodeMsgEnum;
 import com.oocl.ita.parkinglot.enums.OrdersStatusEnum;
 import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
@@ -11,13 +12,17 @@ import com.oocl.ita.parkinglot.repository.EmployeeRepository;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
 import com.oocl.ita.parkinglot.repository.ParkingLotRepository;
 import com.oocl.ita.parkinglot.service.EmployeeService;
-import com.oocl.ita.parkinglot.utils.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -108,7 +113,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employee == null) {
             throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
         } else {
-            ParkingLot findParkingLot = employee.getParkingLots().stream().filter(element -> element.getId() == parkingLot.getId()).findAny().orElse(null);
+            ParkingLot findParkingLot = employee.getParkingLots().stream().filter(element -> element.getId().equals(parkingLot.getId())).findAny().orElse(null);
             if (findParkingLot == null) {
                 throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
             } else {
@@ -148,4 +153,73 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
     }
+
+    public List<ParkingLot> findByConditions(String id, GetEmployeeParkingLotDTO getEmployeeParkingLotDTO) {
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        int page = getEmployeeParkingLotDTO.getPage();
+        int pageSize = getEmployeeParkingLotDTO.getPageSize();
+        if (employee == null) {
+            throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+        } else {
+            String name = getEmployeeParkingLotDTO.getName();
+            String position = getEmployeeParkingLotDTO.getPosition();
+            if (StringUtils.isEmpty(name) && StringUtils.isEmpty(position)) {
+
+                List<ParkingLot> parkingLots = employee.getParkingLots().stream()
+                        .filter(element -> element.getStatus() == ParkingLotStatusEnum.EXIST.ordinal())
+                        .collect(Collectors.toList());
+                int last = page*pageSize<parkingLots.size()?page*pageSize:parkingLots.size();
+                if((page-1)*pageSize>parkingLots.size()){
+                    throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+                }
+                return parkingLots.subList((page-1)*pageSize,last);
+
+
+            } else {
+                List<ParkingLot> parkingLots = parkingLotRepository.findAll(new Specification<ParkingLot>() {
+                    @Override
+                    public Predicate toPredicate(Root<ParkingLot> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                        List<Predicate> predicateList = new ArrayList<>();
+                        if (!StringUtils.isEmpty(name)) {
+                            Path namePath = root.get("name");
+                            Predicate p = criteriaBuilder.equal(namePath, name);
+                            predicateList.add(p);
+                        }
+                        if (!StringUtils.isEmpty(position)) {
+                            Path positionPath = root.get("position");
+                            Predicate p = criteriaBuilder.equal(positionPath, position);
+                            predicateList.add(p);
+                        }
+                        Path statusPath = root.get("status");
+                        Predicate p = criteriaBuilder.equal(statusPath, 0);
+                        predicateList.add(p);
+
+                        Predicate[] predicates = new Predicate[predicateList.size()];
+                        predicateList.toArray(predicates);
+                        criteriaQuery.where(predicates);
+                        return criteriaBuilder.and(predicates);
+                    }
+                });
+                List<ParkingLot> needFilterParkingLots = employee.getParkingLots();
+
+                List<ParkingLot> resultParkingLots = new ArrayList<>();
+                for (ParkingLot p : needFilterParkingLots) {
+                    for (ParkingLot p2 : parkingLots) {
+                        if (p.equals(p2)) {
+                            resultParkingLots.add(p);
+                            break;
+                        }
+                    }
+                }
+                int last = page*pageSize<parkingLots.size()?page*pageSize:parkingLots.size();
+                if((page-1)*pageSize>parkingLots.size()){
+                    throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+                }
+                return parkingLots.subList((page-1)*pageSize,last);
+
+            }
+
+        }
+    }
+
 }

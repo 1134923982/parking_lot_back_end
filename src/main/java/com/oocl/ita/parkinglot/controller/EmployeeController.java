@@ -1,5 +1,6 @@
 package com.oocl.ita.parkinglot.controller;
 
+import com.oocl.ita.parkinglot.dto.GetEmployeeParkingLotDTO;
 import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
 import com.oocl.ita.parkinglot.enums.RoleEnum;
 import com.oocl.ita.parkinglot.model.Employee;
@@ -25,11 +26,6 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
 
-    @GetMapping("/employees/{id}/parking-lots")
-    public ResultVO<List<ParkingLot>> getEmployeeAllParkingLots(@PathVariable(value = "id") String id) {
-        List<ParkingLot> employeeAllParkingLots = employeeService.getEmployeeAllParkingLots(id);
-        return (employeeAllParkingLots == null) ? ResultVO.error(PARAMETER_ERROR) : ResultVO.success(employeeAllParkingLots);
-    }
 
     @GetMapping("/employees/{employeeId}")
     public ResultVO<Employee> getEmployeeById(@PathVariable String employeeId) {
@@ -64,5 +60,10 @@ public class EmployeeController {
     @PostMapping("/employees/{id}/parking-lots")
     public ResultVO addEmployeeNewParkingLot(@PathVariable(value = "id") String id, @RequestBody ParkingLot parkingLot) {
         return ResultVO.success(employeeService.addEmployeeNewParkingLot(id, parkingLot));
+    }
+
+    @GetMapping("/employees/{id}/parking-lots")
+    public ResultVO addEmployeeNewParkingLot(@PathVariable(value = "id") String id, @RequestBody GetEmployeeParkingLotDTO getEmployeeParkingLotDTO) {
+        return ResultVO.success(employeeService.findByConditions(id,getEmployeeParkingLotDTO));
     }
 }
