@@ -1,7 +1,9 @@
 package com.oocl.ita.parkinglot.service.impl;
 
+import com.oocl.ita.parkinglot.enums.CodeMsgEnum;
 import com.oocl.ita.parkinglot.enums.OrdersStatusEnum;
 import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
+import com.oocl.ita.parkinglot.exception.ParkingLotException;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.model.ParkingLot;
@@ -101,8 +103,23 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public int updateEmployeeParkingLotCapacityById(String id, int capacity) {
-        return   parkingLotRepository.updateCapacityById(id, capacity);
+    public int updateEmployeeParkingLotCapacityById(String id, ParkingLot parkingLot) {
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        if (employee == null) {
+            throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+        } else {
+            ParkingLot findParkingLot = employee.getParkingLots().stream().filter(element -> element.getId() == parkingLot.getId()).findAny().orElse(null);
+            if (findParkingLot == null) {
+                throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+            } else {
+                int result = parkingLotRepository.updateCapacityById(parkingLot.getId(), parkingLot.getCapacity());
+                if (result == 1) {
+                    return result;
+                } else {
+                    throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+                }
+            }
+        }
 
     }
 }

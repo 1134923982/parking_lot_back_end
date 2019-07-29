@@ -2,6 +2,7 @@ package com.oocl.ita.parkinglot.service.impl;
 
 import com.oocl.ita.parkinglot.enums.OrdersStatusEnum;
 import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
+import com.oocl.ita.parkinglot.exception.ParkingLotException;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.model.ParkingLot;
@@ -128,20 +129,24 @@ public class EmployeeServiceImplTest {
     @Test
     public void should_return_1_when_update_employee_parkinglot_capacity_success(){
         ParkingLot parkingLot = new ParkingLot();
-
+        Employee employee = new Employee();
+        employee.setId("1");
+        ArrayList<ParkingLot> parkingLots = new ArrayList<>();
+        parkingLots.add(parkingLot);
+        employee.setParkingLots(parkingLots);
         when(parkingLotRepository.updateCapacityById(anyString(),anyInt())).thenReturn(1);
-
-        int result = employeeService.updateEmployeeParkingLotCapacityById(parkingLot.getId(), 190);
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
+        int result = employeeService.updateEmployeeParkingLotCapacityById(employee.getId(), parkingLot);
         assertEquals(result,1);
     }
 
-    @Test
+    @Test(expected = ParkingLotException.class)
     public void should_return_0_when_update_employee_parkinglot_capacity_fail(){
         ParkingLot parkingLot = new ParkingLot();
 
         when(parkingLotRepository.updateCapacityById(anyString(),anyInt())).thenReturn(0);
 
-        int result = employeeService.updateEmployeeParkingLotCapacityById(parkingLot.getId(), 190);
+        int result = employeeService.updateEmployeeParkingLotCapacityById("1", parkingLot);
         assertEquals(result,0);
     }
 

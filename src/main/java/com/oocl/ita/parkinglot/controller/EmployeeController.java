@@ -5,15 +5,14 @@ import com.oocl.ita.parkinglot.enums.RoleEnum;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.model.ParkingLot;
+import com.oocl.ita.parkinglot.repository.ParkingLotRepository;
 import com.oocl.ita.parkinglot.service.EmployeeService;
 import com.oocl.ita.parkinglot.utils.SecurityUtils;
 import com.oocl.ita.parkinglot.vo.ResultVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.repository.query.Param;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,6 +23,7 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
+
 
     @GetMapping("/employees/{id}/parking-lots")
     public ResultVO<List<ParkingLot>> getEmployeeAllParkingLots(@PathVariable(value = "id") String id) {
@@ -54,5 +54,10 @@ public class EmployeeController {
             return ResultVO.success(orders);
         }
 
+    }
+
+    @PatchMapping("/employees/{id}/parking-lots")
+    public ResultVO updateEmployeeParkingLot(@PathVariable(value = "id") String id, @RequestBody ParkingLot parkingLot) {
+        return ResultVO.success(employeeService.updateEmployeeParkingLotCapacityById(id,parkingLot));
     }
 }
