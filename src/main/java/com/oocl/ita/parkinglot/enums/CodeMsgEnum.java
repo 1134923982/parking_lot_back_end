@@ -9,7 +9,9 @@ public enum CodeMsgEnum implements CodeEnum{
     USER_REGISTER_ERROR(504,"账号已经存在"),
     UNKNOW_EXCEPTION (505,"未知错误，联系管理员"),
     SERVER_EXCEPTION (506,"服务端异常"),
-    PARAMETER_ERROR(507,"参数错误");
+    PARAMETER_ERROR(507,"参数错误"),
+
+    ORDER_STATUS_ERROR(101, "订单状态错误");
 
     private int code;
     private String msg;

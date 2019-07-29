@@ -8,4 +8,6 @@ import java.util.List;
 public interface OrdersService {
 
     OrdersVO updateOrders (String orderId, String parkingBoyId, String parkingLotId);
+
+    OrdersVO createOrdersVO(Orders orders);
 }

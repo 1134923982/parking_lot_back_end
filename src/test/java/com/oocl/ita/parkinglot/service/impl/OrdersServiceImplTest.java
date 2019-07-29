@@ -1,5 +1,7 @@
 package com.oocl.ita.parkinglot.service.impl;
 
+import com.oocl.ita.parkinglot.enums.CodeMsgEnum;
+import com.oocl.ita.parkinglot.exception.ParkingLotException;
 import com.oocl.ita.parkinglot.model.Customer;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
@@ -46,6 +48,7 @@ public class OrdersServiceImplTest {
 
         ParkingLot parkingLot = new ParkingLot();
         parkingLot.setId("456");
+        parkingLot.setNowAvailable(10);
         Employee employee = new Employee();
         employee.setId("789");
         employee.setName("test");
@@ -80,5 +83,59 @@ public class OrdersServiceImplTest {
         when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
 
         assertEquals(2, ordersService.updateOrders("123", null, null).getStatus());
+    }
+
+    @Test(expected = ParkingLotException.class)
+    public void should_throw_exception_when_order_id_not_exists() {
+        when(ordersRepository.findById(anyString()).orElseThrow(() -> new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR))).thenThrow(ParkingLotException.class);
+        ordersService.updateOrders("345", null, null);
+    }
+
+    @Test(expected = ParkingLotException.class)
+    public void should_throw_exception_when_given_order_id_and_parking_boy_id_and_parking_lot_id_but_parking_lot_id_not_exists() {
+        Orders orders = new Orders();
+        ParkingLot parkingLot = new ParkingLot();
+        Employee parkingBoy = new Employee();
+
+
+        when(ordersRepository.findById(anyString())).thenReturn(java.util.Optional.of(orders));
+        when(parkingLotRepository.findById(anyString())).thenReturn(java.util.Optional.of(parkingLot));
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(parkingBoy));
+
+        ordersService.updateOrders("345", "exists", "not exists");
+    }
+
+    @Test(expected = ParkingLotException.class)
+    public void should_throw_exception_when_given_order_id_and_parking_boy_id_and_parking_lot_id_but_parking_boy_id_not_exists() {
+        Orders orders = new Orders();
+        ParkingLot parkingLot = new ParkingLot();
+        Employee parkingBoy = new Employee();
+
+
+        when(ordersRepository.findById(anyString())).thenReturn(java.util.Optional.of(orders));
+        when(parkingLotRepository.findById(anyString())).thenReturn(java.util.Optional.of(parkingLot));
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(parkingBoy));
+
+        ordersService.updateOrders("345", "not exists", "exists");
+    }
+
+    @Test(expected = ParkingLotException.class)
+    public void should_throw_exception_when_given_parking_boy_id_and_order_id_but_parking_boy_id_not_exists() {
+        when(parkingLotRepository.findById(anyString()).orElseThrow(() -> new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR))).thenThrow(ParkingLotException.class);
+        ordersService.updateOrders("345", "not exists", null);
+    }
+
+    @Test(expected = ParkingLotException.class)
+    public void should_throw_exception_when_given_order_id_and_parking_boy_id_and_parking_lot_id_but_parking_lot_hava_not_enought_position() {
+        Orders orders = new Orders();
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setNowAvailable(0);
+        Employee parkingBoy = new Employee();
+
+        when(ordersRepository.findById(anyString())).thenReturn(java.util.Optional.of(orders));
+        when(parkingLotRepository.findById(anyString())).thenReturn(java.util.Optional.of(parkingLot));
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(parkingBoy));
+
+        ordersService.updateOrders("345", "exists", "exists");
     }
 }
