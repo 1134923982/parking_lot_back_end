@@ -6,6 +6,7 @@ import com.oocl.ita.parkinglot.enums.RoleEnum;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.model.ParkingLot;
+import com.oocl.ita.parkinglot.repository.EmployeeRepository;
 import com.oocl.ita.parkinglot.service.EmployeeService;
 import com.oocl.ita.parkinglot.utils.SecurityUtils;
 import com.oocl.ita.parkinglot.vo.ParkingLotVO;
@@ -23,6 +24,9 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @GetMapping("/employees/{employeeId}")
     public ResultVO<Employee> getEmployeeById(@PathVariable String employeeId) {
@@ -58,10 +62,10 @@ public class EmployeeController {
         }
     }
 
-    @GetMapping("/employees/{id}/parking-lots")
-    public ResultVO addEmployeeNewParkingLot(@PathVariable(value = "id") String id, @RequestBody GetEmployeeParkingLotDTO getEmployeeParkingLotDTO) {
-        return ResultVO.success(employeeService.findByConditions(id,getEmployeeParkingLotDTO));
-    }
+//    @GetMapping("/employees/{id}/parking-lots")
+//    public ResultVO addEmployeeNewParkingLot(@PathVariable(value = "id") String id, @RequestBody GetEmployeeParkingLotDTO getEmployeeParkingLotDTO) {
+//        return ResultVO.success(employeeService.findByConditions(id,getEmployeeParkingLotDTO));
+//    }
 
     @PatchMapping("/employees/{id}/parking-lots")
     public ResultVO updateEmployeeParkingLot(@PathVariable(value = "id") String id, @RequestBody ParkingLot parkingLot) {
@@ -71,5 +75,10 @@ public class EmployeeController {
     @PostMapping("/employees/{id}/parking-lots")
     public ResultVO addEmployeeNewParkingLot(@PathVariable(value = "id") String id, @RequestBody ParkingLot parkingLot) {
         return ResultVO.success(employeeService.addEmployeeNewParkingLot(id, parkingLot));
+    }
+
+    @GetMapping("/employees/{id}/parking-lots")
+    public ResultVO addEmployeeNewParkingLot(@PathVariable(value = "id") String id) {
+        return ResultVO.success(employeeRepository.findById(id).orElse(null).getParkingLots());
     }
 }
