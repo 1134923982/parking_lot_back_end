@@ -7,6 +7,7 @@ import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.model.ParkingLot;
 import com.oocl.ita.parkinglot.service.EmployeeService;
 import com.oocl.ita.parkinglot.utils.SecurityUtils;
+import com.oocl.ita.parkinglot.vo.ParkingLotVO;
 import com.oocl.ita.parkinglot.vo.ResultVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +54,15 @@ public class EmployeeController {
             return ResultVO.success(orders);
         }
 
+    }
+
+    @GetMapping("/employees/{id}/parking-lots/{status}")
+    public ResultVO<List<ParkingLotVO>> getParkingLotsByManagerId(@PathVariable String id, @PathVariable int status, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "6") int pageSize){
+        if(status ==1 && SecurityUtils.getEmployee().getRole() >= RoleEnum.manager.ordinal()) {
+            List<ParkingLotVO> parkingLotVOsByEmployeeId = employeeService.getParkingLotVOsByEmployeeId(SecurityUtils.getEmployee().getId(), page, pageSize);
+            return ResultVO.success(parkingLotVOsByEmployeeId);
+        }else {
+            return ResultVO.error(PARAMETER_ERROR);
+        }
     }
 }
