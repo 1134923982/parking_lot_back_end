@@ -39,7 +39,7 @@ public class CertificationController {
         }
     }
 
-    @PostMapping("/customer/register")
+    @PostMapping("/customers/register")
     public ResultVO<String> customerResister(@RequestBody Customer customer){
         return ResultVO.success(certificationService.customerRegister(customer));
     }

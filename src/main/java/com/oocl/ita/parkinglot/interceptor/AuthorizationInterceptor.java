@@ -24,7 +24,7 @@ import static com.oocl.ita.parkinglot.enums.CodeMsgEnum.TOKEN_EXCEPTION;
  * */
 public class AuthorizationInterceptor implements HandlerInterceptor {
 
-	private static final String[] IGNORE_URI = {"/register", "/login","/customer"};
+	private static final String[] IGNORE_URI = {"/register", "/login","/customers"};
 	 /** 
      * 该方法将在整个请求完成之后执行， 主要作用是用于清理资源的，
      * 该方法也只能在当前Interceptor的preHandle方法的返回值为true时才会执行。 
