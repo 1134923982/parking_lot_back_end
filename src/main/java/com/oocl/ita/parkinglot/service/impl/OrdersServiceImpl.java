@@ -29,11 +29,18 @@ public class OrdersServiceImpl implements OrdersService {
 
     public OrdersVO updateOrders (String orderId, String parkingBoyId, String parkingLotId) {
         Orders orders = ordersRepository.findById(orderId).orElseThrow(() -> new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR));
+        int status = orders.getStatus();
+        if (status == OrdersStatusEnum.FETCH_ORDER_COMPLETED.ordinal()) {
+            throw new ParkingLotException(CodeMsgEnum.ORDER_STATUS_ERROR);
+        }
 
         if (!StringUtils.isEmpty(parkingLotId)) {
+            if (status != OrdersStatusEnum.PARK_ORDER_NOT_RECEIVED.ordinal()) {
+                throw new ParkingLotException(CodeMsgEnum.ORDER_STATUS_ERROR);
+            }
+
             Employee parkingBoy = employeeRepository.findById(parkingBoyId).orElse(null);
             ParkingLot parkingLot= parkingLotRepository.findById(parkingLotId).orElse(null);
-
             if (parkingBoy == null || parkingLot == null || parkingLot.getNowAvailable() <= 0) {
                 throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
             }
@@ -44,10 +51,13 @@ public class OrdersServiceImpl implements OrdersService {
             orders.setParkingLot(parkingLot);
 
         } else if (!StringUtils.isEmpty(parkingBoyId)) {
+            if (status != OrdersStatusEnum.PARK_ORDER_CAR_IS_PARKED_AND_FETCH_ORDER_NOT_RECEIVED.ordinal()) {
+                throw new ParkingLotException(CodeMsgEnum.ORDER_STATUS_ERROR);
+            }
+
             Employee parkingBoy = employeeRepository.findById(parkingBoyId).orElseThrow(() -> new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR));
             orders.setFetchingBoy(parkingBoy);
         } else {
-            int status = orders.getStatus();
             if (status == OrdersStatusEnum.FETCH_ORDER_RECEIVED.ordinal()) {
                 ParkingLot parkingLot = orders.getParkingLot();
                 parkingLot.setNowAvailable(parkingLot.getNowAvailable() + 1);
@@ -58,7 +68,13 @@ public class OrdersServiceImpl implements OrdersService {
         orders.setStatus(orders.getStatus() + 1);
         ordersRepository.save(orders);
 
+        return createOrdersVO(orders);
+    }
+
+    @Override
+    public OrdersVO createOrdersVO(Orders orders) {
         OrdersVO ordersVO = new OrdersVO();
+
         ordersVO.setCarNumber(orders.getCarNumber());
         ordersVO.setCustomerName(orders.getCustomer().getUserName());
         ordersVO.setCustomerTelephone(orders.getCustomer().getTelephone());
