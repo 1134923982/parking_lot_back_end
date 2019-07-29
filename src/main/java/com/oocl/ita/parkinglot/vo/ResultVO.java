@@ -21,6 +21,11 @@ public class ResultVO<T> {
         this.retCode = cm.getCode();
         this.message = cm.getMsg();
     }
+
+    private ResultVO(int retCode, String message) {
+        this.retCode = retCode;
+        this.message = message;
+    }
     /**
      * 成功时候的调用
      * @return
@@ -53,6 +58,12 @@ public class ResultVO<T> {
         cm.setMsg(cm.getMsg()+"--"+msg);
         return new ResultVO<T>(cm);
     }
+
+    public static <T> ResultVO error(int retCode, String message) {
+        return new ResultVO(retCode, message);
+    }
+
+
     public T getData() {
         return data;
     }
