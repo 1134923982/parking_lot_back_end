@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import static com.oocl.ita.parkinglot.enums.CodeMsgEnum.PARAMETER_ERROR;
 
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -87,21 +88,26 @@ public class EmployeeControllerTest {
         parkingBoy.setRole(1);
         Orders firstOrder = new Orders();
         firstOrder.setParkingBoy(parkingBoy);
+        firstOrder.setStatus(1);
         Orders secondOrder = new Orders();
         secondOrder.setParkingBoy(parkingBoy);
+        secondOrder.setStatus(2);
         Orders thirdOrder = new Orders();
         thirdOrder.setFetchingBoy(parkingBoy);
+        thirdOrder.setStatus(3);
         ArrayList<Orders> orders = new ArrayList<>();
         orders.add(firstOrder);
         orders.add(secondOrder);
         orders.add(thirdOrder);
 
-        when(employeeService.getEmployeeUnfinishOrders(anyString())).thenReturn(orders);
+        when(employeeService.getEmployeeOrdersByFinish(anyString(),anyBoolean())).thenReturn(orders);
 
-        mockMvc.perform(get("/employees/{id}/orders","1").param("finish","finish")
+        mockMvc.perform(get("/employees/{id}/orders","1").param("finish","false")
                 .header("token",SecurityUtils.getTestToken()))
                 .andDo(print())
-                .andExpect(jsonPath("$.data.length()").value(3));
+                .andExpect(jsonPath("$.data.length()").value(3))
+                .andExpect(jsonPath("$.data[0].status").value(1));
     }
+
 
 }

@@ -11,5 +11,5 @@ public interface EmployeeService {
 
     Employee getEmployeeById(String employeeId);
 
-    List<Orders> getEmployeeUnfinishOrders(String id);
+    List<Orders> getEmployeeOrdersByFinish(String id,boolean finish);
 }

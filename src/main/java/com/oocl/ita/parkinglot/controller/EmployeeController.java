@@ -26,28 +26,33 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping("/employees/{id}/parking-lots")
-    public ResultVO<List<ParkingLot>> getEmployeeAllParkingLots(@PathVariable(value = "id") String id){
+    public ResultVO<List<ParkingLot>> getEmployeeAllParkingLots(@PathVariable(value = "id") String id) {
         List<ParkingLot> employeeAllParkingLots = employeeService.getEmployeeAllParkingLots(id);
         return (employeeAllParkingLots == null) ? ResultVO.error(PARAMETER_ERROR) : ResultVO.success(employeeAllParkingLots);
     }
 
     @GetMapping("/employees/{employeeId}")
-    public ResultVO<Employee> getEmployeeById(@PathVariable String employeeId){
-        Employee resultEmployee =new Employee();
-        if(SecurityUtils.getEmployee().getRole() == RoleEnum.parkingBoy.ordinal()){
-            BeanUtils.copyProperties(SecurityUtils.getEmployee(),resultEmployee,"password");
+    public ResultVO<Employee> getEmployeeById(@PathVariable String employeeId) {
+        Employee resultEmployee = new Employee();
+        if (SecurityUtils.getEmployee().getRole() == RoleEnum.parkingBoy.ordinal()) {
+            BeanUtils.copyProperties(SecurityUtils.getEmployee(), resultEmployee, "password");
             return ResultVO.success(resultEmployee);
-        }else if(SecurityUtils.getEmployee().getRole() >= RoleEnum.manager.ordinal()){
-            BeanUtils.copyProperties(employeeService.getEmployeeById(employeeId),resultEmployee,"password");
+        } else if (SecurityUtils.getEmployee().getRole() >= RoleEnum.manager.ordinal()) {
+            BeanUtils.copyProperties(employeeService.getEmployeeById(employeeId), resultEmployee, "password");
             return ResultVO.success(resultEmployee);
-        }else{
+        } else {
             return ResultVO.error(PARAMETER_ERROR);
         }
     }
 
     @GetMapping("/employees/{id}/orders")
-    public ResultVO<List<Orders>> getEmployeeOrdersByFinishStatus (@PathVariable(value = "id") String id , @RequestParam(value = "finish")String finish) {
-        List<Orders> unfinishOrders = employeeService.getEmployeeUnfinishOrders(id);
-        return ResultVO.success(unfinishOrders);
+    public ResultVO<List<Orders>> getEmployeeOrdersByFinishStatus(@PathVariable(value = "id") String id, @RequestParam(value = "finish") boolean finish) {
+        List<Orders> orders = employeeService.getEmployeeOrdersByFinish(id, finish);
+        if (orders == null) {
+            return ResultVO.error(PARAMETER_ERROR);
+        } else {
+            return ResultVO.success(orders);
+        }
+
     }
 }
