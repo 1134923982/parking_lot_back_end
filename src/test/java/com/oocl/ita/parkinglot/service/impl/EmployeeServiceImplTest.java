@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.validation.constraints.AssertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,13 +142,42 @@ public class EmployeeServiceImplTest {
     }
 
     @Test(expected = ParkingLotException.class)
-    public void should_return_0_when_update_employee_parkinglot_capacity_fail(){
+    public void should_throw_ParkingLotExcepotion_when_update_employee_parkinglot_capacity_fail(){
         ParkingLot parkingLot = new ParkingLot();
 
         when(parkingLotRepository.updateCapacityById(anyString(),anyInt())).thenReturn(0);
 
         int result = employeeService.updateEmployeeParkingLotCapacityById("1", parkingLot);
         assertEquals(result,0);
+    }
+
+    @Test
+    public void should_add_employee_new_parking_lot(){
+        ParkingLot parkingLot = new ParkingLot();
+        Employee employee = new Employee();
+        employee.setId("1");
+        ArrayList<ParkingLot> parkingLots = new ArrayList<>();
+        parkingLots.add(parkingLot);
+        employee.setParkingLots(parkingLots);
+
+        when(parkingLotRepository.save(any(ParkingLot.class))).thenReturn(parkingLot);
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
+        when(employeeRepository.save(any(Employee.class))).thenReturn(employee);
+
+        employeeService.addEmployeeNewParkingLot(employee.getId(), parkingLot);
+        boolean result = employee.getParkingLots().contains(parkingLot);
+        assertEquals(true,result);
+    }
+
+    @Test(expected = ParkingLotException.class)
+    public void should_throws_Exception_when_add_new_employee_parking_lot_and_employee_is_not_exist(){
+        Employee employee = null;
+        ParkingLot parkingLot = new ParkingLot();
+
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.ofNullable(employee));
+
+        employeeService.addEmployeeNewParkingLot("1", parkingLot);
+
     }
 
 

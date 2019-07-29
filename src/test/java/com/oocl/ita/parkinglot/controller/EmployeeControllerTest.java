@@ -25,11 +25,9 @@ import static com.oocl.ita.parkinglot.enums.CodeMsgEnum.PARAMETER_ERROR;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -122,6 +120,24 @@ public class EmployeeControllerTest {
                 .header("token",SecurityUtils.getTestToken()))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void should_add_employee_new_parking_lot() throws Exception {
+        Employee employee = new Employee();
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setName("DD");
+        parkingLot.setCapacity(10);
+        parkingLot.setPosition("green street");
+        when(employeeService.addEmployeeNewParkingLot(anyString(),any(ParkingLot.class))).thenReturn(parkingLot);
+        mockMvc.perform(post("/employees/{id}/parking-lots",employee.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new Gson().toJson(parkingLot))
+                .header("token",SecurityUtils.getTestToken()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.retCode").value(200))
+                .andExpect(jsonPath("$.data.id").value(parkingLot.getId()));
     }
 
 

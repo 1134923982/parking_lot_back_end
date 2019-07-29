@@ -122,4 +122,30 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
     }
+
+    @Override
+    public ParkingLot addEmployeeNewParkingLot(String id, ParkingLot parkingLot) {
+
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        if (employee == null) {
+            throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+        } else {
+            parkingLot.setStatus(ParkingLotStatusEnum.EXIST.ordinal());
+            parkingLot.setNowAvailable(parkingLot.getCapacity());
+            ParkingLot savedParkingLot = parkingLotRepository.save(parkingLot);
+            if (savedParkingLot == null) {
+                throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+            } else {
+                employee.getParkingLots().add(savedParkingLot);
+                Employee savedEmployee = employeeRepository.save(employee);
+                if (savedEmployee == null) {
+                    throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+                } else {
+                    return savedParkingLot;
+                }
+
+            }
+        }
+
+    }
 }

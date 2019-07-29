@@ -14,4 +14,6 @@ public interface EmployeeService {
     List<Orders> getEmployeeOrdersByFinish(String id, boolean finish);
 
     int updateEmployeeParkingLotCapacityById(String id, ParkingLot parkingLot);
+
+    ParkingLot addEmployeeNewParkingLot(String id, ParkingLot parkingLot);
 }
