@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 /**
  *拦截器配置
- * @author yif
+ * @author Gordon
  */
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {

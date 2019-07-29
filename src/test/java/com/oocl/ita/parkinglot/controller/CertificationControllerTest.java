@@ -1,6 +1,7 @@
 package com.oocl.ita.parkinglot.controller;
 
 import com.google.gson.Gson;
+import com.oocl.ita.parkinglot.model.Customer;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.service.CertificationService;
 import org.junit.Before;
@@ -51,6 +52,21 @@ public class CertificationControllerTest {
         mvc.perform(post("/login")
         .contentType(MediaType.APPLICATION_JSON)
                 .content(gson.toJson(employee)))
+                .andExpect(status().isOk());
+    }
+
+    @Ignore
+    @Test
+    public void customerLogin() throws Exception {
+        Customer customer = new Customer();
+        customer.setUserName("13674217865");
+        customer.setPassword("123456");
+        Gson gson = new Gson();
+        when(certificationService.customerLogin(customer))
+                .thenReturn(customer);
+        mvc.perform(post("/customer/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(gson.toJson(customer)))
                 .andExpect(status().isOk());
     }
 
