@@ -120,7 +120,7 @@ public class EmployeeControllerTest {
 
         when(employeeService.getParkingLotVOsByEmployeeId(anyString(), anyInt(), anyInt())).thenReturn(parkingLotVOS);
 
-        mockMvc.perform(get("/employees/2/park-lots/1?page=1&pageSize=1")
+        mockMvc.perform(get("/employees/2/parking-lots/1?page=1&pageSize=1")
                 .header("token",SecurityUtils.getTestToken()))
                 .andDo(print())
                 .andExpect(jsonPath("$.data.length()").value(2));
