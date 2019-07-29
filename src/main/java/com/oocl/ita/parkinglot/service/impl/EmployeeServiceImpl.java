@@ -99,4 +99,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         }
     }
+
+    @Override
+    public int updateEmployeeParkingLotCapacityById(String id, int capacity) {
+        return   parkingLotRepository.updateCapacityById(id, capacity);
+
+    }
 }

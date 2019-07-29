@@ -7,6 +7,7 @@ import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.model.ParkingLot;
 import com.oocl.ita.parkinglot.repository.EmployeeRepository;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
+import com.oocl.ita.parkinglot.repository.ParkingLotRepository;
 import com.oocl.ita.parkinglot.service.EmployeeService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +32,9 @@ public class EmployeeServiceImplTest {
 
     @MockBean
     private OrdersRepository ordersRepository;
+
+    @MockBean
+    private ParkingLotRepository parkingLotRepository;
 
     @Autowired
     private EmployeeService employeeService;
@@ -119,6 +123,26 @@ public class EmployeeServiceImplTest {
 
         List<Orders> findOrders = employeeService.getEmployeeOrdersByFinish(employee.getId(), true);
         assertEquals(findOrders.size(),3);
+    }
+
+    @Test
+    public void should_return_1_when_update_employee_parkinglot_capacity_success(){
+        ParkingLot parkingLot = new ParkingLot();
+
+        when(parkingLotRepository.updateCapacityById(anyString(),anyInt())).thenReturn(1);
+
+        int result = employeeService.updateEmployeeParkingLotCapacityById(parkingLot.getId(), 190);
+        assertEquals(result,1);
+    }
+
+    @Test
+    public void should_return_0_when_update_employee_parkinglot_capacity_fail(){
+        ParkingLot parkingLot = new ParkingLot();
+
+        when(parkingLotRepository.updateCapacityById(anyString(),anyInt())).thenReturn(0);
+
+        int result = employeeService.updateEmployeeParkingLotCapacityById(parkingLot.getId(), 190);
+        assertEquals(result,0);
     }
 
 
