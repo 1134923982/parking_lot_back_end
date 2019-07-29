@@ -1,6 +1,7 @@
 package com.oocl.ita.parkinglot.service.impl;
 
 import com.oocl.ita.parkinglot.enums.OrdersStatusEnum;
+import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.model.ParkingLot;
@@ -34,7 +35,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<ParkingLot> getEmployeeAllParkingLots(String parkingBoyId) {
         Employee employee = employeeRepository.findById(parkingBoyId).orElse(null);
-        return (employee == null) ? null : employee.getParkingLots();
+        if (employee == null) {
+            return null;
+        } else {
+            return employee.getParkingLots().stream()
+                    .filter(element -> element.getStatus() == ParkingLotStatusEnum.EXIST.ordinal())
+                    .collect(Collectors.toList());
+        }
+
     }
 
     @Override

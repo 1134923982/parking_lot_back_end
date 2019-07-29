@@ -1,6 +1,7 @@
 package com.oocl.ita.parkinglot.service.impl;
 
 import com.oocl.ita.parkinglot.enums.OrdersStatusEnum;
+import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.model.ParkingLot;
@@ -38,8 +39,11 @@ public class EmployeeServiceImplTest {
     @Test
     public void should_get_employee_all_parkinglots_when_employee_is_exist() {
         ParkingLot firstParkingLot = new ParkingLot();
+        firstParkingLot.setStatus(ParkingLotStatusEnum.EXIST.ordinal());
         ParkingLot secondParkingLot = new ParkingLot();
+        secondParkingLot.setStatus(ParkingLotStatusEnum.EXIST.ordinal());
         ParkingLot thirdParkingLot = new ParkingLot();
+        thirdParkingLot.setStatus(ParkingLotStatusEnum.DELETE.ordinal());
         ArrayList<ParkingLot> parkingLots = new ArrayList<>();
         parkingLots.add(firstParkingLot);
         parkingLots.add(secondParkingLot);
@@ -50,14 +54,16 @@ public class EmployeeServiceImplTest {
         when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
         List<ParkingLot> findParkingLots = employeeService.getEmployeeAllParkingLots(employee.getId());
 
-        assertEquals(employee.getParkingLots(),findParkingLots);
+        assertEquals(2,findParkingLots.size());
 
     }
 
     @Test
     public void should_return_null_when_employee_is_not_exist() {
-        Employee employee = new Employee();
-        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
+        Employee employee = null;
+
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.ofNullable(employee));
+
         List<ParkingLot> findParkingLots = employeeService.getEmployeeAllParkingLots("0");
         assertNull(findParkingLots);
     }

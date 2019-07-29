@@ -19,6 +19,8 @@ public class ParkingLot {
 
     private int nowAvailable;
 
+    private int status;
+
     public ParkingLot() {
     }
 
@@ -67,5 +69,13 @@ public class ParkingLot {
 
     public void setNowAvailable(int nowAvailable) {
         this.nowAvailable = nowAvailable;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }
