@@ -2,22 +2,21 @@ package com.oocl.ita.parkinglot.service.impl;
 
 import com.oocl.ita.parkinglot.enums.OrdersStatusEnum;
 import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
-import com.oocl.ita.parkinglot.exception.ParkingLotException;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.model.ParkingLot;
 import com.oocl.ita.parkinglot.repository.EmployeeRepository;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
-import com.oocl.ita.parkinglot.repository.ParkingLotRepository;
 import com.oocl.ita.parkinglot.service.EmployeeService;
+import com.oocl.ita.parkinglot.vo.ParkingLotVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.validation.constraints.AssertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,9 +33,6 @@ public class EmployeeServiceImplTest {
 
     @MockBean
     private OrdersRepository ordersRepository;
-
-    @MockBean
-    private ParkingLotRepository parkingLotRepository;
 
     @Autowired
     private EmployeeService employeeService;
@@ -60,7 +56,7 @@ public class EmployeeServiceImplTest {
         when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
         List<ParkingLot> findParkingLots = employeeService.getEmployeeAllParkingLots(employee.getId());
 
-        assertEquals(2,findParkingLots.size());
+        assertEquals(findParkingLots.size(),2);
 
     }
 
@@ -128,59 +124,46 @@ public class EmployeeServiceImplTest {
     }
 
     @Test
-    public void should_return_1_when_update_employee_parkinglot_capacity_success(){
-        ParkingLot parkingLot = new ParkingLot();
-        Employee employee = new Employee();
-        employee.setId("1");
-        ArrayList<ParkingLot> parkingLots = new ArrayList<>();
-        parkingLots.add(parkingLot);
-        employee.setParkingLots(parkingLots);
-        when(parkingLotRepository.updateCapacityById(anyString(),anyInt())).thenReturn(1);
-        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
-        int result = employeeService.updateEmployeeParkingLotCapacityById(employee.getId(), parkingLot);
-        assertEquals(result,1);
-    }
+    public void should_return_all_parking_lots_with_parking_boy_by_manager_when_get_parking_lot_by_manager_id_and_page_size(){
+        Employee manager = new Employee();
+        manager.setId("1");
+        Employee parkingBoy1 = new Employee();
+        Employee parkingBoy2 = new Employee();
+        List<Employee> employees = new ArrayList<>();
+        employees.add(parkingBoy1);
+        employees.add(parkingBoy2);
+        List<ParkingLot> parkingLots = new ArrayList<>();
+        parkingLots.add(new ParkingLot("1","a","aa",10,10,1 ));
+        parkingLots.add(new ParkingLot("2","a","aa",10,10,1 ));
+        manager.setParkingLots(parkingLots);
 
-    @Test(expected = ParkingLotException.class)
-    public void should_throw_ParkingLotExcepotion_when_update_employee_parkinglot_capacity_fail(){
-        ParkingLot parkingLot = new ParkingLot();
+        when(employeeRepository.findEmployeesByParkingLotsContains(Mockito.any())).thenReturn(employees);
+        when(employeeRepository.findById(Mockito.anyString())).thenReturn(java.util.Optional.of(manager));
 
-        when(parkingLotRepository.updateCapacityById(anyString(),anyInt())).thenReturn(0);
-
-        int result = employeeService.updateEmployeeParkingLotCapacityById("1", parkingLot);
-        assertEquals(result,0);
+        List<ParkingLotVO> parkingLotVOsByEmployeeId = employeeService.getParkingLotVOsByEmployeeId("1", 1, 3);
+        assertEquals(2, parkingLotVOsByEmployeeId.size());
     }
 
     @Test
-    public void should_add_employee_new_parking_lot(){
-        ParkingLot parkingLot = new ParkingLot();
-        Employee employee = new Employee();
-        employee.setId("1");
-        ArrayList<ParkingLot> parkingLots = new ArrayList<>();
-        parkingLots.add(parkingLot);
-        employee.setParkingLots(parkingLots);
+    public void should_return_null_array_by_manager_when_get_parking_lot_page_and_page_size_is_un_vaild(){
+        Employee manager = new Employee();
+        manager.setId("1");
+        Employee parkingBoy1 = new Employee();
+        Employee parkingBoy2 = new Employee();
+        List<Employee> employees = new ArrayList<>();
+        employees.add(parkingBoy1);
+        employees.add(parkingBoy2);
+        List<ParkingLot> parkingLots = new ArrayList<>();
+        parkingLots.add(new ParkingLot("1","a","aa",10,10,1 ));
+        parkingLots.add(new ParkingLot("2","a","aa",10,10,1 ));
+        manager.setParkingLots(parkingLots);
 
-        when(parkingLotRepository.save(any(ParkingLot.class))).thenReturn(parkingLot);
-        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
-        when(employeeRepository.save(any(Employee.class))).thenReturn(employee);
+        when(employeeRepository.findEmployeesByParkingLotsContains(Mockito.any())).thenReturn(employees);
+        when(employeeRepository.findById(Mockito.anyString())).thenReturn(java.util.Optional.of(manager));
 
-        employeeService.addEmployeeNewParkingLot(employee.getId(), parkingLot);
-        boolean result = employee.getParkingLots().contains(parkingLot);
-        assertEquals(true,result);
+        List<ParkingLotVO> parkingLotVOsByEmployeeId = employeeService.getParkingLotVOsByEmployeeId("1", 3, 3);
+        assertEquals(0, parkingLotVOsByEmployeeId.size());
     }
-
-    @Test(expected = ParkingLotException.class)
-    public void should_throws_Exception_when_add_new_employee_parking_lot_and_employee_is_not_exist(){
-        Employee employee = null;
-        ParkingLot parkingLot = new ParkingLot();
-
-        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.ofNullable(employee));
-
-        employeeService.addEmployeeNewParkingLot("1", parkingLot);
-
-    }
-
-
 
 
 }

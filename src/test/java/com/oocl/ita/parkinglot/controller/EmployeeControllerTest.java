@@ -1,6 +1,5 @@
 package com.oocl.ita.parkinglot.controller;
 
-import com.google.gson.Gson;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.model.ParkingLot;
@@ -8,26 +7,29 @@ import com.oocl.ita.parkinglot.service.EmployeeService;
 
 import com.oocl.ita.parkinglot.utils.SecurityUtils;
 
+import com.oocl.ita.parkinglot.vo.ParkingLotVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 import static com.oocl.ita.parkinglot.enums.CodeMsgEnum.PARAMETER_ERROR;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -110,34 +112,18 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    public void should_update_employee_capacity() throws Exception {
-        Employee employee = new Employee();
-        ParkingLot parkingLot = new ParkingLot();
-        when(employeeService.updateEmployeeParkingLotCapacityById(anyString(),any(ParkingLot.class))).thenReturn(1);
-        mockMvc.perform(patch("/employees/{id}/parking-lots","1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new Gson().toJson(parkingLot))
-                .header("token",SecurityUtils.getTestToken()))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
+    public void should_return_parking_lots_with_parking_boys_when_manager_get_all_parking_lots_with_status() throws Exception {
 
-    @Test
-    public void should_add_employee_new_parking_lot() throws Exception {
-        Employee employee = new Employee();
-        ParkingLot parkingLot = new ParkingLot();
-        parkingLot.setName("DD");
-        parkingLot.setCapacity(10);
-        parkingLot.setPosition("green street");
-        when(employeeService.addEmployeeNewParkingLot(anyString(),any(ParkingLot.class))).thenReturn(parkingLot);
-        mockMvc.perform(post("/employees/{id}/parking-lots",employee.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new Gson().toJson(parkingLot))
+        List<ParkingLotVO> parkingLotVOS = new ArrayList<>();
+        parkingLotVOS.add(new ParkingLotVO());
+        parkingLotVOS.add(new ParkingLotVO());
+
+        when(employeeService.getParkingLotVOsByEmployeeId(anyString(), anyInt(), anyInt())).thenReturn(parkingLotVOS);
+
+        mockMvc.perform(get("/employees/2/park-lots/1?page=1&pageSize=1")
                 .header("token",SecurityUtils.getTestToken()))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.retCode").value(200))
-                .andExpect(jsonPath("$.data.id").value(parkingLot.getId()));
+                .andExpect(jsonPath("$.data.length()").value(2));
     }
 
 

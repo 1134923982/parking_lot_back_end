@@ -10,10 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import java.util.List;
+
 public interface EmployeeRepository extends JpaRepository<Employee,String>{
 
     Employee findByTelephoneAndPassword(String telePhone,String passWord);
 
     Employee findByTelephone(String telePhone);
 
+    List<Employee> findEmployeesByParkingLotsContains(ParkingLot parkingLot);
 }
