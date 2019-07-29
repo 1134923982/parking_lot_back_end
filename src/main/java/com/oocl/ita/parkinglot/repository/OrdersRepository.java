@@ -14,6 +14,12 @@ public interface OrdersRepository extends JpaRepository<Orders , String> {
     @Query(value = "select * from Orders where status = 0 or status = 3", nativeQuery = true)
     List<Orders> findAllNotReceiptOrders();
 
-    @Query(value = "select * from Orders where fetching_boy_id = :id or parking_lot_id = :id", nativeQuery = true)
-    List<Orders> findEmployeeOrders(@Param(value = "id") String id);
+    @Query(value = "select * from Orders where fetching_boy_id = :id or parking_boy_id = :id", nativeQuery = true)
+    List<Orders> findEmployeeUnfinishOrders(@Param(value = "id") String id);
+
+    @Query(value = "select * from Orders where parking_boy_id = :id and status >= 3", nativeQuery = true)
+    List<Orders> findEmployeeParkingFinishOrders(@Param(value = "id") String id);
+
+    @Query(value = "select * from Orders where fetching_boy_id = :id and status = 6", nativeQuery = true)
+    List<Orders> findEmployeeFetchingFinishOrders(@Param(value = "id") String id);
 }

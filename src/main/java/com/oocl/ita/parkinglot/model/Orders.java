@@ -74,6 +74,14 @@ public class Orders {
         this.status = status;
     }
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
     public String getCarNumber() {
         return carNumber;
     }
@@ -82,12 +90,12 @@ public class Orders {
         this.carNumber = carNumber;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public String getFetchPosition() {
+        return fetchPosition;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setFetchPosition(String fetchPosition) {
+        this.fetchPosition = fetchPosition;
     }
 
     public ParkingLot getParkingLot() {
@@ -130,20 +138,8 @@ public class Orders {
         this.fetchingBoy = fetchingBoy;
     }
 
-
-    public Customer getCustomerId() {
-        return customer;
-    }
-
-    public void setCustomerId(String customerId) {
-        this.customer = customer;
-    }
-
-    public String getFetchPosition() {
-        return fetchPosition;
-    }
-
-    public void setFetchPosition(String fetchPosition) {
-        this.fetchPosition = fetchPosition;
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }
