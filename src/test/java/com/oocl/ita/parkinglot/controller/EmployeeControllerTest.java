@@ -1,5 +1,6 @@
 package com.oocl.ita.parkinglot.controller;
 
+import com.google.gson.Gson;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.model.ParkingLot;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -21,10 +23,10 @@ import java.util.ArrayList;
 
 import static com.oocl.ita.parkinglot.enums.CodeMsgEnum.PARAMETER_ERROR;
 
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -107,6 +109,19 @@ public class EmployeeControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("$.data.length()").value(3))
                 .andExpect(jsonPath("$.data[0].status").value(1));
+    }
+
+    @Test
+    public void should_update_employee_capacity() throws Exception {
+        Employee employee = new Employee();
+        ParkingLot parkingLot = new ParkingLot();
+        when(employeeService.updateEmployeeParkingLotCapacityById(anyString(),any(ParkingLot.class))).thenReturn(1);
+        mockMvc.perform(patch("/employees/{id}/parking-lots","1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new Gson().toJson(parkingLot))
+                .header("token",SecurityUtils.getTestToken()))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
 
