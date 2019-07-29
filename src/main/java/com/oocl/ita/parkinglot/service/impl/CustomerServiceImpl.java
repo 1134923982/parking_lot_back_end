@@ -1,5 +1,8 @@
 package com.oocl.ita.parkinglot.service.impl;
 
+import com.oocl.ita.parkinglot.enums.CodeMsgEnum;
+import com.oocl.ita.parkinglot.exception.ParkingLotException;
+import com.oocl.ita.parkinglot.model.Customer;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
 import com.oocl.ita.parkinglot.service.CustomerService;
@@ -7,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.oocl.ita.parkinglot.enums.CodeMsgEnum.CREATE_ERROR;
 
 /**
  * @author Gordon
@@ -26,4 +31,15 @@ public class CustomerServiceImpl implements CustomerService{
     public List<Orders> getCustomerProcessingOrdersByCustomerId(String customerId) {
         return ordersRepository.findByCustomer_IdAndStatusIsUnFinish(customerId);
     }
+
+    @Override
+    public Orders createCustomerOrders(String customerId,Orders orders){
+        if(ordersRepository.findByCustomer_IdAndStatusIsUnFinish(customerId).size()==0){
+            orders.setStatus(0);
+            return ordersRepository.save(orders);
+        }else{
+            throw new ParkingLotException(CREATE_ERROR);
+        }
+    }
+
 }

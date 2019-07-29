@@ -1,5 +1,6 @@
 package com.oocl.ita.parkinglot.service.impl;
 
+import com.oocl.ita.parkinglot.exception.ParkingLotException;
 import com.oocl.ita.parkinglot.model.Customer;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
@@ -54,6 +55,34 @@ public class CustomerServiceImplTest {
                 .thenReturn(ordersList);
         List<Orders> customerHistoryOrdersByCustomerId = customerService.getCustomerProcessingOrdersByCustomerId(customer.getId());
         assertEquals(customerHistoryOrdersByCustomerId.size(),ordersList.size());
+    }
+
+    @Test
+    public void should_return_a_new_orders_when_input_a_orders_and_has_no_unfinish_orders(){
+        Orders orders = new Orders();
+        orders.setStatus(0);
+        List<Orders> list = new ArrayList<>();
+        when(ordersRepository.findByCustomer_IdAndStatusIsUnFinish(anyString()))
+                .thenReturn(list);
+        when(ordersRepository.save(orders))
+                .thenReturn(orders);
+        assertEquals(customerService.createCustomerOrders("1",orders).getStatus(),orders.getStatus());
+    }
+
+    @Test(expected= ParkingLotException.class)
+    public void should_return_a_new_orders_when_input_a_orders_and_has_unfinish_orders(){
+        Customer customer = new Customer();
+        customer.setId("1");
+        Orders orders = new Orders();
+        orders.setStatus(4);
+        orders.setCustomer(customer);
+        List<Orders> list = new ArrayList<>();
+        list.add(orders);
+        when(ordersRepository.findByCustomer_IdAndStatusIsUnFinish(anyString()))
+                .thenReturn(list);
+        when(ordersRepository.save(orders))
+                .thenReturn(orders);
+        assertEquals(customerService.createCustomerOrders("1",orders).getStatus(),orders.getStatus());
     }
 
 }

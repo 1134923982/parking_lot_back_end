@@ -10,6 +10,7 @@ public enum CodeMsgEnum implements CodeEnum{
     UNKNOW_EXCEPTION (505,"未知错误，联系管理员"),
     SERVER_EXCEPTION (506,"服务端异常"),
     PARAMETER_ERROR(507,"参数错误"),
+    CREATE_ERROR(508,"新增失败"),
 
     ORDER_STATUS_ERROR(101, "订单状态错误");
 
