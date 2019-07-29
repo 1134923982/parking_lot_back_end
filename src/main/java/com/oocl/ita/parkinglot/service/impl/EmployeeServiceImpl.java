@@ -117,24 +117,24 @@ public class EmployeeServiceImpl implements EmployeeService {
             List<ParkingLotVO> parkingLotVOs = parkingLots.stream()
                     .map(parkingLot -> new ParkingLotVO(parkingLot.getId(), parkingLot.getName(), parkingLot.getPosition(), parkingLot.getCapacity(), parkingLot.getNowAvailable()))
                     .collect(Collectors.toList());
-            for(int i = 0; i < parkingLots.size(); i++) {
+            for (int i = 0; i < parkingLots.size(); i++) {
                 List<Employee> employees = employeeRepository.findEmployeesByParkingLotsContains(parkingLots.get(i));
                 employees = employees.stream().filter(e -> e.getRole() == 0).collect(Collectors.toList());
                 List<Employee> resultEmployees = new ArrayList<>();
-                for(int j=0; j<employees.size(); j++){
+                for (int j = 0; j < employees.size(); j++) {
                     Employee resultEmployee = new Employee();
                     BeanUtils.copyProperties(employees.get(j), resultEmployee, "password", "parkingLots");
                     resultEmployees.add(resultEmployee);
                 }
                 parkingLotVOs.get(i).setParkingBoys(resultEmployees);
             }
-            if((page-1)*pageSize > parkingLotVOs.size()) {
+            if ((page - 1) * pageSize > parkingLotVOs.size()) {
                 return new ArrayList<>();
             }
-            if (page*pageSize<parkingLotVOs.size()){
-                parkingLotVOs = parkingLotVOs.subList((page-1)*pageSize, page*pageSize);
+            if (page * pageSize < parkingLotVOs.size()) {
+                parkingLotVOs = parkingLotVOs.subList((page - 1) * pageSize, page * pageSize);
             } else {
-                parkingLotVOs = parkingLotVOs.subList((page-1)*pageSize, parkingLotVOs.size());
+                parkingLotVOs = parkingLotVOs.subList((page - 1) * pageSize, parkingLotVOs.size());
             }
             return parkingLotVOs;
         }
@@ -147,6 +147,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         int pageSize = getEmployeeParkingLotDTO.getPageSize();
         if (employee == null) {
             throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+        }
+        if (page == -1 && pageSize == -1) {
+            return employee.getParkingLots();
         } else {
             String name = getEmployeeParkingLotDTO.getName();
             String position = getEmployeeParkingLotDTO.getPosition();
@@ -155,11 +158,11 @@ public class EmployeeServiceImpl implements EmployeeService {
                 List<ParkingLot> parkingLots = employee.getParkingLots().stream()
                         .filter(element -> element.getStatus() == ParkingLotStatusEnum.EXIST.ordinal())
                         .collect(Collectors.toList());
-                int last = page*pageSize<parkingLots.size()?page*pageSize:parkingLots.size();
-                if((page-1)*pageSize>parkingLots.size()){
+                int last = page * pageSize < parkingLots.size() ? page * pageSize : parkingLots.size();
+                if ((page - 1) * pageSize > parkingLots.size()) {
                     throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
                 }
-                return parkingLots.subList((page-1)*pageSize,last);
+                return parkingLots.subList((page - 1) * pageSize, last);
 
 
             } else {
@@ -198,11 +201,11 @@ public class EmployeeServiceImpl implements EmployeeService {
                         }
                     }
                 }
-                int last = page*pageSize<parkingLots.size()?page*pageSize:parkingLots.size();
-                if((page-1)*pageSize>parkingLots.size()){
+                int last = page * pageSize < parkingLots.size() ? page * pageSize : parkingLots.size();
+                if ((page - 1) * pageSize > parkingLots.size()) {
                     throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
                 }
-                return parkingLots.subList((page-1)*pageSize,last);
+                return parkingLots.subList((page - 1) * pageSize, last);
 
             }
 
@@ -234,6 +237,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
     }
+
     public int updateEmployeeParkingLotCapacityById(String id, ParkingLot parkingLot) {
         Employee employee = employeeRepository.findById(id).orElse(null);
         if (employee == null) {
@@ -251,6 +255,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                 }
             }
         }
-}
+    }
 
 }
