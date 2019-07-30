@@ -2,22 +2,16 @@ package com.oocl.ita.parkinglot.controller;
 
 
 
-import com.oocl.ita.parkinglot.annotation.Auth;
-import com.oocl.ita.parkinglot.enums.RoleEnum;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
 import com.oocl.ita.parkinglot.vo.ResultVO;
 
 import com.oocl.ita.parkinglot.dto.UpdateOrdersStatusDTO;
-import com.oocl.ita.parkinglot.model.Orders;
-import com.oocl.ita.parkinglot.repository.OrdersRepository;
 import com.oocl.ita.parkinglot.service.OrdersService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController

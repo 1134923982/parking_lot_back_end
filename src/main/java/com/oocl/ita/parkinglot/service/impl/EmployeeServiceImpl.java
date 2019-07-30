@@ -1,9 +1,9 @@
 package com.oocl.ita.parkinglot.service.impl;
 
-import com.oocl.ita.parkinglot.dto.GetEmployeeParkingLotDTO;
 import com.oocl.ita.parkinglot.enums.CodeMsgEnum;
 import com.oocl.ita.parkinglot.enums.OrdersStatusEnum;
 import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
+import com.oocl.ita.parkinglot.enums.RoleEnum;
 import com.oocl.ita.parkinglot.exception.ParkingLotException;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
@@ -18,14 +18,14 @@ import com.oocl.ita.parkinglot.vo.PageVO;
 import com.oocl.ita.parkinglot.vo.ParkingLotVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.oocl.ita.parkinglot.enums.CodeMsgEnum.CREATE_ERROR;
 
 
 @Service
@@ -117,7 +117,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     private List<Orders> getUnFinishOrdersByParkingBoyId(String id) {
-        List<Orders> orders = ordersRepository.findEmployeeUnfinishOrders(id);
+        List<Orders> orders = ordersRepository.findEmployeeFinishOrders(id);
 
         List<Orders> unFinishOrders = orders.stream()
                 .filter(element -> element.getStatus() == OrdersStatusEnum.PARK_ORDER_RECEIVED.ordinal()
@@ -215,14 +215,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> findAllEmployees() {
-        return employeeRepository.findAll();
+    public List<Employee> findAllEmployees(int role) {
+        return role >= RoleEnum.parkingBoy.ordinal() ? employeeRepository.findByRole(role) : employeeRepository.findAll();
     }
 
     @Override
     public Employee createEmployee(Employee employee) {
-        return null;
+        if (employee.getRole() < RoleEnum.admin.ordinal()) {
+            return employeeRepository.save(employee);
+        } else {
+            throw new ParkingLotException(CREATE_ERROR);
+        }
     }
+
 
     @Override
     public EmployeesVO updateEmployee(Employee employee) {
@@ -241,4 +246,5 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.save(targetEmployee);
         return EmployeeToEmployeeVOConverter.convert(targetEmployee);
     }
+
 }

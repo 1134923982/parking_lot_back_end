@@ -1,22 +1,16 @@
 package com.oocl.ita.parkinglot.interceptor;
 
 import com.auth0.jwt.internal.com.fasterxml.jackson.databind.ObjectMapper;
-import com.oocl.ita.parkinglot.annotation.Auth;
 import com.oocl.ita.parkinglot.model.Customer;
-import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.utils.SecurityCustomerUtils;
-import com.oocl.ita.parkinglot.utils.SecurityUtils;
 import com.oocl.ita.parkinglot.vo.ResultVO;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.PrintWriter;
 
-import static com.oocl.ita.parkinglot.enums.CodeMsgEnum.TOKENCAN_EXCEPTION;
 import static com.oocl.ita.parkinglot.enums.CodeMsgEnum.TOKEN_EXCEPTION;
 
 /**

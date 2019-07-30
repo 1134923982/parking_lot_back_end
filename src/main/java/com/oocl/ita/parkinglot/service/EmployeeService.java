@@ -1,6 +1,5 @@
 package com.oocl.ita.parkinglot.service;
 
-import com.oocl.ita.parkinglot.dto.GetEmployeeParkingLotDTO;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.model.ParkingLot;
@@ -27,7 +26,7 @@ public interface EmployeeService {
 
     List<EmployeesVO> getParkingBoyByManagedId(String id);
 
-    List<Employee> findAllEmployees();
+    List<Employee> findAllEmployees(int role);
 
     Employee createEmployee(Employee employee);
 }
