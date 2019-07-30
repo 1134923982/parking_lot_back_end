@@ -180,7 +180,7 @@ public class EmployeeControllerTest {
     public void should_return_employee_when_request_to_update_employee() throws Exception {
         Employee employee = new Employee();
         employee.setName("Test-name");
-        when(employeeService.updateEmployee(anyString(),any())).thenReturn(employee);
+        when(employeeService.updateEmployeeById(anyString(),any())).thenReturn(employee);
         mockMvc.perform(put("/employees/1")
                 .header("token",SecurityUtils.getTestToken())
                 .contentType(MediaType.APPLICATION_JSON)

@@ -19,6 +19,7 @@ import com.oocl.ita.parkinglot.vo.ParkingLotVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,7 +117,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     private List<Orders> getUnFinishOrdersByParkingBoyId(String id) {
-        List<Orders> orders = ordersRepository.findEmployeeUnfinishOrders(id);
+        List<Orders> orders = ordersRepository.findEmployeeFinishOrders(id);
 
         List<Orders> unFinishOrders = orders.stream()
                 .filter(element -> element.getStatus() == OrdersStatusEnum.PARK_ORDER_RECEIVED.ordinal()
@@ -228,11 +229,29 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee updateEmployee(String employeeId,Employee employee) {
+    public Employee updateEmployeeById(String employeeId, Employee employee) {
         Employee oldEmployee = employeeRepository.findById(employeeId).get();
-        BeanUtils.copyProperties(employee,oldEmployee,"id","password");
+        BeanUtils.copyProperties(employee, oldEmployee, "id", "password");
         employeeRepository.save(oldEmployee);
         oldEmployee.setPassword(null);
         return oldEmployee;
+    }
+
+    @Override
+    public EmployeesVO updateEmployee(Employee employee) {
+        Employee targetEmployee = employeeRepository.findById(employee.getId()).orElseThrow(() -> new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR));
+        if (!StringUtils.isEmpty(employee.getTelephone())) {
+            targetEmployee.setTelephone(employee.getTelephone());
+        }
+        // TODO 魔法数字，将实体类所有基本类型改为包装类�
+        if (employee.getStatus() != -1) {
+            targetEmployee.setStatus(employee.getStatus());
+        }
+        if (employee.getParkingLots() != null) {
+            targetEmployee.setParkingLots(employee.getParkingLots());
+        }
+
+        employeeRepository.save(targetEmployee);
+        return EmployeeToEmployeeVOConverter.convert(targetEmployee);
     }
 }

@@ -71,6 +71,11 @@ public class EmployeeController {
         return ResultVO.success(employeeService.updateParkingLotByEmployeeId(id, parkingLot));
     }
 
+    @PatchMapping("/employees/{id}")
+    public ResultVO updateEmployee(@PathVariable("id") String id, @RequestBody Employee employee) {
+        return ResultVO.success(employeeService.updateEmployee(employee));
+    }
+
     @PostMapping("/employees/{id}/parking-lots")
     public ResultVO addEmployeeNewParkingLot(@PathVariable(value = "id") String id, @RequestBody ParkingLot parkingLot) {
         return ResultVO.success(employeeService.addEmployeeNewParkingLot(id, parkingLot));
@@ -92,8 +97,8 @@ public class EmployeeController {
     }
 
     @PutMapping("/employees/{employeeId}")
-    public ResultVO<Employee> updateEmployee(@PathVariable String employeeId,@RequestBody Employee employee){
-        return ResultVO.success(employeeService.updateEmployee(employeeId,employee));
+    public ResultVO<Employee> updateEmployeeById(@PathVariable String employeeId,@RequestBody Employee employee){
+        return ResultVO.success(employeeService.updateEmployeeById(employeeId,employee));
     }
 
 }
