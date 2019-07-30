@@ -41,6 +41,7 @@ public class EmployeeController {
             return ResultVO.error(PARAMETER_ERROR);
         }
     }
+
     @GetMapping("/employees/{id}/orders")
     public ResultVO<List<Orders>> getEmployeeOrdersByFinishStatus(@PathVariable(value = "id") String id, @RequestParam(value = "finish") boolean finish) {
         List<Orders> orders = employeeService.getEmployeeOrdersByFinish(id, finish);
@@ -53,23 +54,28 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees/{id}/parking-lots/{status}")
-    public ResultVO<List<ParkingLotVO>> getParkingLotsByManagerId(@PathVariable String id, @PathVariable int status, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "6") int pageSize){
-        if(status ==1 && SecurityUtils.getEmployee().getRole() >= RoleEnum.manager.ordinal()) {
+    public ResultVO<List<ParkingLotVO>> getParkingLotsByManagerId(@PathVariable String id, @PathVariable int status, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "6") int pageSize) {
+        if (status == 1 && SecurityUtils.getEmployee().getRole() >= RoleEnum.manager.ordinal()) {
             List<ParkingLotVO> parkingLotVOsByEmployeeId = employeeService.getParkingLotVOsByEmployeeId(SecurityUtils.getEmployee().getId(), page, pageSize);
             return ResultVO.success(parkingLotVOsByEmployeeId);
-        }else {
+        } else {
             return ResultVO.error(PARAMETER_ERROR);
         }
     }
 
-//    @GetMapping("/employees/{id}/parking-lots")
-//    public ResultVO addEmployeeNewParkingLot(@PathVariable(value = "id") String id, @RequestBody GetEmployeeParkingLotDTO getEmployeeParkingLotDTO) {
-//        return ResultVO.success(employeeService.findByConditions(id,getEmployeeParkingLotDTO));
-//    }
+    @GetMapping("/employees/{id}/parking-lots")
+    public ResultVO addEmployeeNewParkingLot(@PathVariable(value = "id") String id,
+                                             @RequestParam(value = "page" , defaultValue = "0") int page,
+                                             @RequestParam(value = "pageSize" ,defaultValue = "0") int pageSize,
+                                             @RequestParam(value = "name" ,defaultValue = "") String name,
+                                             @RequestParam(value = "position" ,defaultValue = "") String position) {
+        GetEmployeeParkingLotDTO getEmployeeParkingLotDTO = new GetEmployeeParkingLotDTO(name , position , page , pageSize);
+        return ResultVO.success(employeeService.findByConditions(id, getEmployeeParkingLotDTO));
+    }
 
     @PatchMapping("/employees/{id}/parking-lots")
     public ResultVO updateEmployeeParkingLot(@PathVariable(value = "id") String id, @RequestBody ParkingLot parkingLot) {
-        return ResultVO.success(employeeService.updateEmployeeParkingLotCapacityById(id,parkingLot));
+        return ResultVO.success(employeeService.updateEmployeeParkingLotCapacityById(id, parkingLot));
     }
 
     @PostMapping("/employees/{id}/parking-lots")
@@ -77,8 +83,8 @@ public class EmployeeController {
         return ResultVO.success(employeeService.addEmployeeNewParkingLot(id, parkingLot));
     }
 
-    @GetMapping("/employees/{id}/parking-lots")
-    public ResultVO addEmployeeNewParkingLot(@PathVariable(value = "id") String id) {
-        return ResultVO.success(employeeRepository.findById(id).orElse(null).getParkingLots());
-    }
+//    @GetMapping("/employees/{id}/parking-lots")
+//    public ResultVO addEmployeeNewParkingLot(@PathVariable(value = "id") String id) {
+//        return ResultVO.success(employeeRepository.findById(id).orElse(null).getParkingLots());
+//    }
 }
