@@ -19,6 +19,8 @@ public interface EmployeeService {
 
     ParkingLot updateParkingLotByEmployeeId(String id, ParkingLot parkingLot);
 
+    EmployeesVO updateEmployee(Employee employee);
+
     ParkingLot addEmployeeNewParkingLot(String id, ParkingLot parkingLot);
 
     List<ParkingLotVO> getParkingLotVOsByEmployeeId(String id,int page, int pageSize);

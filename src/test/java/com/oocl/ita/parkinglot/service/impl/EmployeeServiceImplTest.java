@@ -1,5 +1,6 @@
 package com.oocl.ita.parkinglot.service.impl;
 
+import com.oocl.ita.parkinglot.enums.CodeMsgEnum;
 import com.oocl.ita.parkinglot.enums.OrdersStatusEnum;
 import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
 import com.oocl.ita.parkinglot.exception.ParkingLotException;
@@ -224,5 +225,81 @@ public class EmployeeServiceImplTest {
 
         List<Orders> employeeOrdersByFinish = employeeService.getEmployeeOrdersByFinish("1", true);
         assertEquals(4, employeeOrdersByFinish.size());
+    }
+
+    @Test(expected = ParkingLotException.class)
+    public void should_throw_exception_when_employee_id_is_not_exists() {
+        when(employeeRepository.findById(anyString()).orElseThrow(() -> new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR))).thenThrow(ParkingLotException.class);
+
+        employeeService.updateEmployee(new Employee());
+    }
+
+    @Test
+    public void should_return_update_employee_when_given_telephone() {
+        Employee employee = new Employee();
+        employee.setTelephone("111");
+
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(new Employee()));
+
+        assertEquals("111", employeeService.updateEmployee(employee).getTelephone());
+    }
+
+    @Test
+    public void should_return_update_employee_when_given_status() {
+        Employee employee = new Employee();
+        employee.setStatus(1);
+
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(new Employee()));
+
+        assertEquals(1, employeeService.updateEmployee(employee).getStatus());
+    }
+
+    @Test
+    public void should_return_not_update_employee_when_given_status_in_special_values() {
+        Employee employee = new Employee();
+        employee.setStatus(-1);
+
+        Employee secondEmployee = new Employee();
+        secondEmployee.setStatus(1);
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(secondEmployee));
+
+        assertEquals(1, employeeService.updateEmployee(employee).getStatus());
+    }
+
+    @Test
+    public void should_return_update_employee_when_given_parkingLots() {
+        Employee employee = new Employee();
+        employee.setParkingLots(Arrays.asList(new ParkingLot(), new ParkingLot()));
+
+        Employee secondEmployee = new Employee();
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
+
+        assertEquals(2, employeeService.updateEmployee(employee).getParkingLots().size());
+    }
+
+    @Test
+    public void should_return_not_update_employee_when_not_given_parkingLots() {
+        Employee employee = new Employee();
+        Employee secondEmployee = new Employee();
+
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
+
+        assertNull(employeeService.updateEmployee(employee).getParkingLots());
+    }
+
+    @Test
+    public void should_return_update_employee_when_given_telephone_and_parkingLots_and_status() {
+        Employee employee = new Employee();
+        employee.setParkingLots(Arrays.asList(new ParkingLot(), new ParkingLot()));
+        employee.setStatus(1);
+        employee.setTelephone("123");
+
+        Employee secondEmployee = new Employee();
+
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
+
+        assertEquals(2, employeeService.updateEmployee(employee).getParkingLots().size());
+        assertEquals(1, employeeService.updateEmployee(employee).getStatus());
+        assertEquals("123", employeeService.updateEmployee(employee).getTelephone());
     }
 }

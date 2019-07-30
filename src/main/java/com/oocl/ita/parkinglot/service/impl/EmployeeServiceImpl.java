@@ -224,4 +224,21 @@ public class EmployeeServiceImpl implements EmployeeService {
         return null;
     }
 
+    @Override
+    public EmployeesVO updateEmployee(Employee employee) {
+        Employee targetEmployee = employeeRepository.findById(employee.getId()).orElseThrow(() -> new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR));
+        if (!StringUtils.isEmpty(employee.getTelephone())) {
+            targetEmployee.setTelephone(employee.getTelephone());
+        }
+        // TODO 魔法数字，将实体类所有基本类型改为包装类型
+        if (employee.getStatus() != -1) {
+            targetEmployee.setStatus(employee.getStatus());
+        }
+        if (employee.getParkingLots() != null) {
+            targetEmployee.setParkingLots(employee.getParkingLots());
+        }
+
+        employeeRepository.save(targetEmployee);
+        return EmployeeToEmployeeVOConverter.convert(targetEmployee);
+    }
 }
