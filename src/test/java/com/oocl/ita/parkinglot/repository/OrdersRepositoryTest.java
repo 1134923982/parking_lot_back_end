@@ -28,7 +28,7 @@ public class OrdersRepositoryTest {
         Employee parkingBoy1 = new Employee("boy1","2","male","123",1,"1");
         Employee parkingBoy2 = new Employee("boy2","3","male","123",1,"1");
         Customer customer = new Customer();
-
+        customer.setId("1");
 
         manager.setId("1");
         manager.setRole(1);
@@ -42,6 +42,9 @@ public class OrdersRepositoryTest {
         Orders order2 = new Orders("2",2,customer,"","");
         order2.setFetchingBoy(parkingBoy2);
         order2.setId("2");
+        Orders order3 = new Orders("3",6,customer,"","");
+        order3.setFetchingBoy(parkingBoy2);
+        order3.setId("3");
 
         entityManager.persist(manager);
         entityManager.persist(parkingBoy1);
@@ -49,6 +52,7 @@ public class OrdersRepositoryTest {
         entityManager.persist(customer);
         entityManager.persist(order1);
         entityManager.persist(order2);
+        entityManager.persist(order3);
     }
 
     @Test
@@ -61,7 +65,44 @@ public class OrdersRepositoryTest {
     @Test
     public void find_all_fetching_car_orders_by_manager_id() {
         List<Orders> ordersByManagerId = ordersRepository.findFetchingCarOrdersByManagerId("1");
-        assertEquals(1, ordersByManagerId.size());
+        assertEquals(2, ordersByManagerId.size());
         assertEquals("2", ordersByManagerId.get(0).getId());
     }
+
+    @Test
+    public void find_all_orders_status_is_0_or_3_when_get_un_clerk_order() {
+        List<Orders> allNotReceiptOrders = ordersRepository.findAllNotReceiptOrders();
+        assertEquals(0, allNotReceiptOrders.size());
+    }
+
+    @Test
+    public void find_working_orders_by_parking_boy_id_when_get_un_finish_orders() {
+        List<Orders> employeeUnfinishOrders = ordersRepository.findEmployeeFinishOrders("3");
+        assertEquals(3, employeeUnfinishOrders.size());
+    }
+
+    @Test
+    public void find_parked_orders_by_parking_boy_id_when_get_parked_orders() {
+        List<Orders> employeeParkingFinishOrders = ordersRepository.findEmployeeParkingFinishOrders("3");
+        assertEquals(0, employeeParkingFinishOrders.size());
+    }
+
+    @Test
+    public void find_fetched_orders_by_parking_boy_id_when_get_fetched_orders() {
+        List<Orders> employeeParkingFinishOrders = ordersRepository.findEmployeeFetchingFinishOrders("3");
+        assertEquals(1, employeeParkingFinishOrders.size());
+    }
+
+    @Test
+    public void find_finish_orders_by_customer_id_when_get_orders() {
+        List<Orders> orderByCustomerIdAndStatusIsFinish = ordersRepository.findByCustomerIdAndStatusIsFinish("1");
+        assertEquals(1, orderByCustomerIdAndStatusIsFinish.size());
+    }
+
+    @Test
+    public void find_un_finish_orders_by_customer_id_when_get_orders() {
+        List<Orders> orderByCustomerIdAndStatusIsUnFinish = ordersRepository.findByCustomerIdAndStatusIsUnFinish("1");
+        assertEquals(2, orderByCustomerIdAndStatusIsUnFinish.size());
+    }
+
 }

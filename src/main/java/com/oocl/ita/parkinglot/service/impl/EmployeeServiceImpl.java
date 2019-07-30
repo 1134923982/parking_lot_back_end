@@ -1,6 +1,5 @@
 package com.oocl.ita.parkinglot.service.impl;
 
-import com.oocl.ita.parkinglot.dto.GetEmployeeParkingLotDTO;
 import com.oocl.ita.parkinglot.enums.CodeMsgEnum;
 import com.oocl.ita.parkinglot.enums.OrdersStatusEnum;
 import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
@@ -18,11 +17,8 @@ import com.oocl.ita.parkinglot.vo.PageVO;
 import com.oocl.ita.parkinglot.vo.ParkingLotVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
-import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -117,7 +113,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     private List<Orders> getUnFinishOrdersByParkingBoyId(String id) {
-        List<Orders> orders = ordersRepository.findEmployeeUnfinishOrders(id);
+        List<Orders> orders = ordersRepository.findEmployeeFinishOrders(id);
 
         List<Orders> unFinishOrders = orders.stream()
                 .filter(element -> element.getStatus() == OrdersStatusEnum.PARK_ORDER_RECEIVED.ordinal()

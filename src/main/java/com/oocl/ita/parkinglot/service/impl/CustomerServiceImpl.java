@@ -1,8 +1,6 @@
 package com.oocl.ita.parkinglot.service.impl;
 
-import com.oocl.ita.parkinglot.enums.CodeMsgEnum;
 import com.oocl.ita.parkinglot.exception.ParkingLotException;
-import com.oocl.ita.parkinglot.model.Customer;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.repository.CustomerRepository;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
@@ -27,17 +25,17 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     public List<Orders> getCustomerHistoryOrdersByCustomerId(String customerId) {
-        return ordersRepository.findByCustomer_IdAndStatusIsFinish(customerId);
+        return ordersRepository.findByCustomerIdAndStatusIsFinish(customerId);
     }
 
     @Override
     public List<Orders> getCustomerProcessingOrdersByCustomerId(String customerId) {
-        return ordersRepository.findByCustomer_IdAndStatusIsUnFinish(customerId);
+        return ordersRepository.findByCustomerIdAndStatusIsUnFinish(customerId);
     }
 
     @Override
     public Orders createCustomerOrders(String customerId,Orders orders){
-        if(ordersRepository.findByCustomer_IdAndStatusIsUnFinish(customerId).size()==0){
+        if(ordersRepository.findByCustomerIdAndStatusIsUnFinish(customerId).size()==0){
             orders.setStatus(0);
             orders.setCustomer(customerRepository.findById(customerId).get());
             return ordersRepository.save(orders);

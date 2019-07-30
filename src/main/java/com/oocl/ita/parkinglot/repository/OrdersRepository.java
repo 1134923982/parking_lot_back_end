@@ -15,7 +15,7 @@ public interface OrdersRepository extends JpaRepository<Orders , String> {
     List<Orders> findAllNotReceiptOrders();
 
     @Query(value = "select * from Orders where fetching_boy_id = :id or parking_boy_id = :id", nativeQuery = true)
-    List<Orders> findEmployeeUnfinishOrders(@Param(value = "id") String id);
+    List<Orders> findEmployeeFinishOrders(@Param(value = "id") String id);
 
     @Query(value = "select * from Orders where parking_boy_id = :id and status >= 3", nativeQuery = true)
     List<Orders> findEmployeeParkingFinishOrders(@Param(value = "id") String id);
@@ -24,10 +24,10 @@ public interface OrdersRepository extends JpaRepository<Orders , String> {
     List<Orders> findEmployeeFetchingFinishOrders(@Param(value = "id") String id);
 
     @Query(value = "select * from Orders where customer_id = :id and status = 6", nativeQuery = true)
-    List<Orders> findByCustomer_IdAndStatusIsFinish(@Param(value = "id") String id);
+    List<Orders> findByCustomerIdAndStatusIsFinish(@Param(value = "id") String id);
 
     @Query(value = "select * from Orders where customer_id = :id and status < 6", nativeQuery = true)
-    List<Orders> findByCustomer_IdAndStatusIsUnFinish(@Param(value = "id") String id);
+    List<Orders> findByCustomerIdAndStatusIsUnFinish(@Param(value = "id") String id);
 
     @Query(value = "select * from Orders o where parking_boy_id in (select e1.id from employee e1 LEFT JOIN employee e2 on e2.id=e1.managed_id WHERE e2.role>0 and e2.id=:id)", nativeQuery = true)
     List<Orders> findParkingCarOrdersByManagerId(@Param(value = "id") String id);

@@ -96,7 +96,7 @@ public class EmployeeServiceImplTest {
         orders.add(secondOrder);
 
         when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
-        when(ordersRepository.findEmployeeUnfinishOrders(anyString())).thenReturn(orders);
+        when(ordersRepository.findEmployeeFinishOrders(anyString())).thenReturn(orders);
 
         List<Orders> findOrders = employeeService.getEmployeeOrdersByFinish(employee.getId(), false);
         assertEquals(findOrders.size(),2);
