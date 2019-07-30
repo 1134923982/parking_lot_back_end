@@ -3,7 +3,6 @@ package com.oocl.ita.parkinglot.repository;
 import com.oocl.ita.parkinglot.model.Customer;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
-import com.sun.javaws.jnl.ResourcesDesc;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
