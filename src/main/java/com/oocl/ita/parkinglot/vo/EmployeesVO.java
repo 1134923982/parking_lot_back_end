@@ -1,5 +1,9 @@
 package com.oocl.ita.parkinglot.vo;
 
+import com.oocl.ita.parkinglot.model.ParkingLot;
+
+import java.util.List;
+
 public class EmployeesVO {
 
     private String id;
@@ -14,13 +18,16 @@ public class EmployeesVO {
 
     private int status;
 
-    public EmployeesVO(String id, String name, String idCardNumber, String gender, String telephone, int status) {
+    private List<ParkingLot> parkingLots;
+
+    public EmployeesVO(String id, String name, String idCardNumber, String gender, String telephone, int status, List<ParkingLot> parkingLots) {
         this.id = id;
         this.name = name;
         this.idCardNumber = idCardNumber;
         this.gender = gender;
         this.telephone = telephone;
         this.status = status;
+        this.parkingLots = parkingLots;
     }
 
     public EmployeesVO() {
@@ -72,5 +79,13 @@ public class EmployeesVO {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public List<ParkingLot> getParkingLots() {
+        return parkingLots;
+    }
+
+    public void setParkingLots(List<ParkingLot> parkingLots) {
+        this.parkingLots = parkingLots;
     }
 }
