@@ -1,7 +1,6 @@
 package com.oocl.ita.parkinglot.controller;
 
 import com.oocl.ita.parkinglot.dto.GetEmployeeParkingLotDTO;
-import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
 import com.oocl.ita.parkinglot.enums.RoleEnum;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
@@ -75,7 +74,7 @@ public class EmployeeController {
 
     @PatchMapping("/employees/{id}/parking-lots")
     public ResultVO updateEmployeeParkingLot(@PathVariable(value = "id") String id, @RequestBody ParkingLot parkingLot) {
-        return ResultVO.success(employeeService.updateEmployeeParkingLotCapacityById(id, parkingLot));
+        return ResultVO.success(employeeService.updateParkingLotByEmployeeId(id, parkingLot));
     }
 
     @PostMapping("/employees/{id}/parking-lots")

@@ -146,7 +146,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employee == null) {
             throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
         }
-        if (page == -1 && pageSize == -1) {
+        if (page == 0 && pageSize == 0) {
             parkingLotPage.setPageContent(employee.getParkingLots());
             parkingLotPage.setTotal(employee.getParkingLots().size());
         } else {
@@ -238,7 +238,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     }
 
-    public int updateEmployeeParkingLotCapacityById(String id, ParkingLot parkingLot) {
+    public ParkingLot updateParkingLotByEmployeeId(String id, ParkingLot parkingLot) {
         Employee employee = employeeRepository.findById(id).orElse(null);
         if (employee == null) {
             throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
@@ -247,12 +247,14 @@ public class EmployeeServiceImpl implements EmployeeService {
             if (findParkingLot == null) {
                 throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
             } else {
-                int result = parkingLotRepository.updateCapacityById(parkingLot.getId(), parkingLot.getCapacity());
-                if (result == 1) {
-                    return result;
-                } else {
-                    throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
-                }
+                BeanUtils.copyProperties(parkingLot, findParkingLot, "id", "nowAvailable", "name", "position");
+                return parkingLotRepository.save(findParkingLot);
+//                int result = parkingLotRepository.updateCapacityById(parkingLot.getId(), parkingLot.getCapacity());
+//                if (result == 1) {
+//                    return result;
+//                } else {
+//                    throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+//                }
             }
         }
     }
