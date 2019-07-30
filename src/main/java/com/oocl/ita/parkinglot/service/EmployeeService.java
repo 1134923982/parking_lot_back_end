@@ -25,4 +25,7 @@ public interface EmployeeService {
 
     List<EmployeesVO> getParkingBoyByManagedId(String id);
 
+    List<Employee> findAllEmployees();
+
+    Employee createEmployee(Employee employee);
 }

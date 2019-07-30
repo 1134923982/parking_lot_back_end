@@ -195,4 +195,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return EmployeeToEmployeeVOConverter.convert(employees);
     }
+
+    @Override
+    public List<Employee> findAllEmployees() {
+        return employeeRepository.findAll();
+    }
+
+    @Override
+    public Employee createEmployee(Employee employee) {
+        return null;
+    }
+
 }

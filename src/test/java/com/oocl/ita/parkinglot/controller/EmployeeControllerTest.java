@@ -125,5 +125,16 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$.data.length()").value(2));
     }
 
+    @Test
+    public void should_return_all_employees_when_request_for_all() throws Exception {
 
+        List<Employee> employees = new ArrayList();
+        employees.add(new Employee());
+        employees.add(new Employee());
+        when(employeeService.findAllEmployees()).thenReturn(employees);
+        mockMvc.perform(get("/employees")
+                .header("token",SecurityUtils.getTestToken()))
+                .andDo(print())
+                .andExpect(jsonPath("$.data.length()").value(2));
+    }
 }
