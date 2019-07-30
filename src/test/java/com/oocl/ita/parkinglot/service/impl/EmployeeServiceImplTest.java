@@ -208,4 +208,21 @@ public class EmployeeServiceImplTest {
         assertEquals(employeeList.size(),employeeService.findAllEmployees().size());
 
     }
+
+    @Test
+    public void should_return_all_orders_by_manager_id_when_get_orders_by_manager_id(){
+        Employee manager = new Employee();
+        manager.setId("1");
+        manager.setRole(1);
+        List<Orders> orders = new ArrayList<>();
+        orders.add(new Orders());
+        orders.add(new Orders());
+
+        when(ordersRepository.findParkingCarOrdersByManagerId(anyString())).thenReturn(orders);
+        when(ordersRepository.findFetchingCarOrdersByManagerId(anyString())).thenReturn(orders);
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(manager));
+
+        List<Orders> employeeOrdersByFinish = employeeService.getEmployeeOrdersByFinish("1", true);
+        assertEquals(4, employeeOrdersByFinish.size());
+    }
 }
