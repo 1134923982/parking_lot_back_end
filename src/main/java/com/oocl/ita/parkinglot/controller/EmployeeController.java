@@ -77,4 +77,9 @@ public class EmployeeController {
         return ResultVO.success(employeeService.addEmployeeNewParkingLot(id, parkingLot));
     }
 
+
+    @GetMapping("/employees/{id}/employees")
+    public ResultVO getParkingBoyByManagerId(@PathVariable("id") String id) {
+        return ResultVO.success(employeeService.getParkingBoyByManagedId(id));
+    }
 }

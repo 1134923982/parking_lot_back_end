@@ -12,6 +12,8 @@ import com.oocl.ita.parkinglot.repository.EmployeeRepository;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
 import com.oocl.ita.parkinglot.repository.ParkingLotRepository;
 import com.oocl.ita.parkinglot.service.EmployeeService;
+import com.oocl.ita.parkinglot.utils.converters.EmployeeToEmployeeVOConverter;
+import com.oocl.ita.parkinglot.vo.EmployeesVO;
 import com.oocl.ita.parkinglot.vo.PageVO;
 import com.oocl.ita.parkinglot.vo.ParkingLotVO;
 import org.springframework.beans.BeanUtils;
@@ -168,6 +170,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     }
 
+    @Override
     public ParkingLot updateParkingLotByEmployeeId(String id, ParkingLot parkingLot) {
         Employee employee = employeeRepository.findById(id).orElse(null);
         if (employee == null) {
@@ -183,6 +186,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
+    @Override
+    public List<EmployeesVO> getParkingBoyByManagedId(String id) {
+        List<Employee> employees = employeeRepository.findByManagedId(id);
+        if (employees == null) {
+            return null;
+        }
 
-
+        return EmployeeToEmployeeVOConverter.convert(employees);
+    }
 }
