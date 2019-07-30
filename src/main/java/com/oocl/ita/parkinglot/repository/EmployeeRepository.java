@@ -24,6 +24,8 @@ public interface EmployeeRepository extends JpaRepository<Employee,String>{
     List<Employee> findEmployeesByParkingLotsContains(ParkingLot parkingLot);
 
     List<Employee> findByIdAndRole(String employeeId ,int role);
+    
+    List<Employee> findByManagedId(String managerId);
 
     List<Employee> findByRole(int role);
 

@@ -20,6 +20,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -167,6 +168,39 @@ public class EmployeeServiceImplTest {
     }
 
     @Test
+    public void should_return_null_when_given_not_exists_manager_id() {
+        when(employeeRepository.findByManagedId(anyString())).thenReturn(null);
+
+        assertNull(employeeService.getParkingBoyByManagedId("not exists"));
+    }
+
+    @Test
+    public void should_return_employeeVO_when_given_manager_id_whose_had_only_one_parking_boy() {
+        Employee employee = new Employee("name", "idCard", "gender", "phone", 0, "managedId");
+
+        when(employeeRepository.findByManagedId(anyString())).thenReturn(Arrays.asList(employee));
+
+        assertEquals(1, employeeService.getParkingBoyByManagedId("only contain one parking boy").size());
+    }
+
+    @Test
+    public void should_return_employeeVO_when_given_manager_id_whose_had_more_than_one_parking_boy() {
+        Employee employee = new Employee("name", "idCard", "gender", "phone", 0, "managedId");
+        Employee employee1 = new Employee("2name", "idCard", "gender", "phone", 0, "managedId");
+
+        when(employeeRepository.findByManagedId(anyString())).thenReturn(Arrays.asList(employee, employee1));
+
+        assertEquals(2, employeeService.getParkingBoyByManagedId("contain more than one parking boy").size());
+    }
+
+    @Test
+    public void should_return_employeeVO_when_given_manager_id_whose_had_no_parking_boy() {
+        when(employeeRepository.findByManagedId(anyString())).thenReturn(null);
+
+        assertNull( employeeService.getParkingBoyByManagedId("had no parking boy"));
+    }
+
+    @Test
     public void should_return_the_employee_list_when_find_all() {
         List employeeList = new ArrayList();
         employeeList.add(new Employee());
@@ -182,6 +216,24 @@ public class EmployeeServiceImplTest {
         employee.setName("zhangsan");
         when(employeeRepository.save(employee)).thenReturn(employee);
         assertEquals(employee, employeeService.createEmployee(employee));
+    }
+
+    @Test
+    public void should_return_all_orders_by_manager_id_when_get_orders_by_manager_id(){
+        Employee manager = new Employee();
+        manager.setId("1");
+        manager.setRole(1);
+        List<Orders> orders = new ArrayList<>();
+        orders.add(new Orders());
+        orders.add(new Orders());
+        
+        when(ordersRepository.findParkingCarOrdersByManagerId(anyString())).thenReturn(orders);
+        when(ordersRepository.findFetchingCarOrdersByManagerId(anyString())).thenReturn(orders);
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(manager));
+
+        List<Orders> employeeOrdersByFinish = employeeService.getEmployeeOrdersByFinish("1", true);
+        assertEquals(4, employeeOrdersByFinish.size());
+
     }
 
     @Test

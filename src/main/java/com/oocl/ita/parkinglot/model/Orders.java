@@ -50,6 +50,14 @@ public class Orders {
         this.fetchPosition = fetchPosition;
     }
 
+    public Orders(String id, String orderNumber, int status, String carNumber, ParkingLot parkingLot) {
+        this.id = id;
+        this.orderNumber = orderNumber;
+        this.status = status;
+        this.carNumber = carNumber;
+        this.parkingLot = parkingLot;
+    }
+
     public String getId() {
         return id;
     }

@@ -12,6 +12,8 @@ import com.oocl.ita.parkinglot.repository.EmployeeRepository;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
 import com.oocl.ita.parkinglot.repository.ParkingLotRepository;
 import com.oocl.ita.parkinglot.service.EmployeeService;
+import com.oocl.ita.parkinglot.utils.converters.EmployeeToEmployeeVOConverter;
+import com.oocl.ita.parkinglot.vo.EmployeesVO;
 import com.oocl.ita.parkinglot.vo.PageVO;
 import com.oocl.ita.parkinglot.vo.ParkingLotVO;
 import org.springframework.beans.BeanUtils;
@@ -63,49 +65,67 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeRepository.findById(id).orElse(null);
         if (employee == null)
             return null;
-        else {
+        else if (employee.getRole() == 0) {
             if (!finish) {
-                List<Orders> orders = ordersRepository.findEmployeeUnfinishOrders(id);
-
-                List<Orders> unfinishOrders = orders.stream()
-                        .filter(element -> element.getStatus() == OrdersStatusEnum.PARK_ORDER_RECEIVED.ordinal()
-                                || element.getStatus() == OrdersStatusEnum.PARK_ORDER_PICKED_UP_THE_CAR.ordinal()
-                                || element.getStatus() == OrdersStatusEnum.FETCH_ORDER_RECEIVED.ordinal()
-                                || element.getStatus() == OrdersStatusEnum.FETCH_ORDER_PICKED_UP_THE_CAR.ordinal())
-                        .collect(Collectors.toList());
-
-                return unfinishOrders;
+                return getUnFinishOrdersByParkingBoyId(id);
             } else {
-                List<Orders> parkingFinishorders = ordersRepository.findEmployeeParkingFinishOrders(id);
-
-                for (Orders order : parkingFinishorders) {
-                    order.setStatus(OrdersStatusEnum.PARK_ORDER_CAR_IS_PARKED_AND_FETCH_ORDER_NOT_RECEIVED.ordinal());
-                }
-
-                List<Orders> findFetchingFinishOrders = ordersRepository.findEmployeeFetchingFinishOrders(id);
-                ArrayList<Orders> cloneOrders = new ArrayList<>();
-
-                for (Orders order : findFetchingFinishOrders) {
-                    if (parkingFinishorders.contains(order)) {
-                        Orders cloneOrder = new Orders();
-                        cloneOrder.setStatus(OrdersStatusEnum.FETCH_ORDER_COMPLETED.ordinal());
-                        BeanUtils.copyProperties(order, cloneOrder, "status");
-                        cloneOrders.add(cloneOrder);
-                    }
-                }
-
-                List<Orders> resultFetchingFinishOrders = findFetchingFinishOrders.stream()
-                        .filter(element -> !parkingFinishorders.contains(element))
-                        .collect(Collectors.toList());
-
-                ArrayList<Orders> finishOrders = new ArrayList<>();
-                finishOrders.addAll(parkingFinishorders);
-                finishOrders.addAll(resultFetchingFinishOrders);
-                finishOrders.addAll(cloneOrders);
-                return finishOrders;
+                return getFinishOrdersByParkingBoyId(id);
             }
-
+        } else {
+            return getOrdersByManagerId(employee);
         }
+    }
+
+    private List<Orders> getOrdersByManagerId(Employee employee) {
+        List<Orders> fetchingCarOrdersByManagerId = ordersRepository.findFetchingCarOrdersByManagerId(employee.getId());
+        fetchingCarOrdersByManagerId = fetchingCarOrdersByManagerId.stream().map(orders -> new Orders(orders.getId(), orders.getOrderNumber(), orders.getStatus(), orders.getCarNumber(), orders.getParkingLot())).collect(Collectors.toList());
+        List<Orders> parkingCarOrdersByManagerId = ordersRepository.findParkingCarOrdersByManagerId(employee.getId());
+        parkingCarOrdersByManagerId = parkingCarOrdersByManagerId.stream().map(orders -> new Orders(orders.getId(), orders.getOrderNumber(), orders.getStatus(), orders.getCarNumber(), orders.getParkingLot())).collect(Collectors.toList());
+        parkingCarOrdersByManagerId.addAll(fetchingCarOrdersByManagerId);
+        return parkingCarOrdersByManagerId;
+    }
+
+    private List<Orders> getFinishOrdersByParkingBoyId(String id) {
+        List<Orders> parkingFinishOrders = ordersRepository.findEmployeeParkingFinishOrders(id);
+
+        for (Orders order : parkingFinishOrders) {
+            order.setStatus(OrdersStatusEnum.PARK_ORDER_CAR_IS_PARKED_AND_FETCH_ORDER_NOT_RECEIVED.ordinal());
+        }
+
+        List<Orders> findFetchingFinishOrders = ordersRepository.findEmployeeFetchingFinishOrders(id);
+        ArrayList<Orders> cloneOrders = new ArrayList<>();
+
+        for (Orders order : findFetchingFinishOrders) {
+            if (parkingFinishOrders.contains(order)) {
+                Orders cloneOrder = new Orders();
+                cloneOrder.setStatus(OrdersStatusEnum.FETCH_ORDER_COMPLETED.ordinal());
+                BeanUtils.copyProperties(order, cloneOrder, "status");
+                cloneOrders.add(cloneOrder);
+            }
+        }
+
+        List<Orders> resultFetchingFinishOrders = findFetchingFinishOrders.stream()
+                .filter(element -> !parkingFinishOrders.contains(element))
+                .collect(Collectors.toList());
+
+        ArrayList<Orders> finishOrders = new ArrayList<>();
+        finishOrders.addAll(parkingFinishOrders);
+        finishOrders.addAll(resultFetchingFinishOrders);
+        finishOrders.addAll(cloneOrders);
+        return finishOrders;
+    }
+
+    private List<Orders> getUnFinishOrdersByParkingBoyId(String id) {
+        List<Orders> orders = ordersRepository.findEmployeeUnfinishOrders(id);
+
+        List<Orders> unFinishOrders = orders.stream()
+                .filter(element -> element.getStatus() == OrdersStatusEnum.PARK_ORDER_RECEIVED.ordinal()
+                        || element.getStatus() == OrdersStatusEnum.PARK_ORDER_PICKED_UP_THE_CAR.ordinal()
+                        || element.getStatus() == OrdersStatusEnum.FETCH_ORDER_RECEIVED.ordinal()
+                        || element.getStatus() == OrdersStatusEnum.FETCH_ORDER_PICKED_UP_THE_CAR.ordinal())
+                .collect(Collectors.toList());
+
+        return unFinishOrders;
     }
 
     @Override
@@ -181,6 +201,16 @@ public class EmployeeServiceImpl implements EmployeeService {
                 return parkingLotRepository.save(findParkingLot);
             }
         }
+    }
+
+    @Override
+    public List<EmployeesVO> getParkingBoyByManagedId(String id) {
+        List<Employee> employees = employeeRepository.findByManagedId(id);
+        if (employees == null) {
+            return null;
+        }
+
+        return EmployeeToEmployeeVOConverter.convert(employees);
     }
 
     @Override

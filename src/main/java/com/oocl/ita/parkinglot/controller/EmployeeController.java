@@ -41,7 +41,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees/{id}/orders")
-    public ResultVO<List<Orders>> getEmployeeOrdersByFinishStatus(@PathVariable(value = "id") String id, @RequestParam(value = "finish") boolean finish) {
+    public ResultVO<List<Orders>> getEmployeeOrdersByFinishStatus(@PathVariable(value = "id") String id, @RequestParam(value = "finish", defaultValue = "true") boolean finish) {
         List<Orders> orders = employeeService.getEmployeeOrdersByFinish(id, finish);
         if (orders == null) {
             return ResultVO.error(PARAMETER_ERROR);
@@ -74,6 +74,11 @@ public class EmployeeController {
     @PostMapping("/employees/{id}/parking-lots")
     public ResultVO addEmployeeNewParkingLot(@PathVariable(value = "id") String id, @RequestBody ParkingLot parkingLot) {
         return ResultVO.success(employeeService.addEmployeeNewParkingLot(id, parkingLot));
+    }
+
+    @GetMapping("/employees/{id}/employees")
+    public ResultVO getParkingBoyByManagerId(@PathVariable("id") String id) {
+        return ResultVO.success(employeeService.getParkingBoyByManagedId(id));
     }
 
     @GetMapping("/employees")
