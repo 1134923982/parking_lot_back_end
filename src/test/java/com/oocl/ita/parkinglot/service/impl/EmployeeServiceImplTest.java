@@ -2,12 +2,14 @@ package com.oocl.ita.parkinglot.service.impl;
 
 import com.oocl.ita.parkinglot.enums.OrdersStatusEnum;
 import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
+import com.oocl.ita.parkinglot.exception.ParkingLotException;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.model.ParkingLot;
 import com.oocl.ita.parkinglot.repository.EmployeeRepository;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
 import com.oocl.ita.parkinglot.service.EmployeeService;
+import com.oocl.ita.parkinglot.vo.PageVO;
 import com.oocl.ita.parkinglot.vo.ParkingLotVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,20 +56,19 @@ public class EmployeeServiceImplTest {
         employee.setParkingLots(parkingLots);
 
         when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
-        List<ParkingLot> findParkingLots = employeeService.getEmployeeAllParkingLots(employee.getId());
+        PageVO<ParkingLot> employeeAllParkingLots = employeeService.getEmployeeAllParkingLots(employee.getId());
 
-        assertEquals(findParkingLots.size(),2);
+        assertEquals(employeeAllParkingLots.getPageContent().size(),2);
 
     }
 
-    @Test
+    @Test(expected = ParkingLotException.class)
     public void should_return_null_when_employee_is_not_exist() {
         Employee employee = null;
 
         when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.ofNullable(employee));
 
-        List<ParkingLot> findParkingLots = employeeService.getEmployeeAllParkingLots("0");
-        assertNull(findParkingLots);
+        PageVO<ParkingLot> employeeAllParkingLots = employeeService.getEmployeeAllParkingLots("0");
     }
 
     @Test

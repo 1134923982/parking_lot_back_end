@@ -39,14 +39,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     private OrdersRepository ordersRepository;
 
     @Override
-    public List<ParkingLot> getEmployeeAllParkingLots(String parkingBoyId) {
-        Employee employee = employeeRepository.findById(parkingBoyId).orElse(null);
+    public PageVO<ParkingLot> getEmployeeAllParkingLots(String Id) {
+        Employee employee = employeeRepository.findById(Id).orElse(null);
         if (employee == null) {
-            return null;
+            throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
         } else {
-            return employee.getParkingLots().stream()
+            List<ParkingLot> parkingLots = employee.getParkingLots().stream()
                     .filter(element -> element.getStatus() == ParkingLotStatusEnum.EXIST.ordinal())
                     .collect(Collectors.toList());
+            PageVO<ParkingLot> parkingLotPageVO = new PageVO<>();
+            parkingLotPageVO.setPageContent(parkingLots);
+            return parkingLotPageVO;
         }
 
     }
@@ -138,79 +141,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return null;
     }
 
-    public PageVO<ParkingLot> findByConditions(String id, GetEmployeeParkingLotDTO getEmployeeParkingLotDTO) {
-        Employee employee = employeeRepository.findById(id).orElse(null);
-        int page = getEmployeeParkingLotDTO.getPage();
-        int pageSize = getEmployeeParkingLotDTO.getPageSize();
-        PageVO<ParkingLot> parkingLotPage = new PageVO<ParkingLot>();
-        if (employee == null) {
-            throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
-        }
-        if (page == 0 && pageSize == 0) {
-            parkingLotPage.setPageContent(employee.getParkingLots());
-            parkingLotPage.setTotal(employee.getParkingLots().size());
-        } else {
-            String name = getEmployeeParkingLotDTO.getName();
-            String position = getEmployeeParkingLotDTO.getPosition();
-            if (StringUtils.isEmpty(name) && StringUtils.isEmpty(position)) {
-
-                List<ParkingLot> parkingLots = employee.getParkingLots().stream()
-                        .filter(element -> element.getStatus() == ParkingLotStatusEnum.EXIST.ordinal())
-                        .collect(Collectors.toList());
-                int last = page * pageSize < parkingLots.size() ? page * pageSize : parkingLots.size();
-                if ((page - 1) * pageSize > parkingLots.size()) {
-                    throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
-                }
-                parkingLotPage.setPageContent(parkingLots.subList((page - 1) * pageSize, last));
-                parkingLotPage.setTotal(parkingLots.size());
-
-
-
-            } else {
-                List<ParkingLot> parkingLots = parkingLotRepository.findAll(new Specification<ParkingLot>() {
-                    @Override
-                    public Predicate toPredicate(Root<ParkingLot> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                        List<Predicate> predicateList = new ArrayList<>();
-                        if (!StringUtils.isEmpty(name)) {
-                            Path namePath = root.get("name");
-                            predicateList.add(criteriaBuilder.like(namePath, "%"  + name + "%" ));
-                        }
-                        if (!StringUtils.isEmpty(position)) {
-                            Path positionPath = root.get("position");
-                            predicateList.add(criteriaBuilder.like(positionPath, "%" + position + "%"));
-                        }
-                        Path statusPath = root.get("status");
-                        Predicate p = criteriaBuilder.equal(statusPath, 0);
-                        predicateList.add(p);
-
-                        Predicate[] predicates = new Predicate[predicateList.size()];
-                        predicateList.toArray(predicates);
-                        criteriaQuery.where(predicates);
-                        return criteriaBuilder.and(predicates);
-                    }
-                });
-                List<ParkingLot> needFilterParkingLots = employee.getParkingLots();
-
-                List<ParkingLot> resultParkingLots = new ArrayList<>();
-                for (ParkingLot p : needFilterParkingLots) {
-                    for (ParkingLot p2 : parkingLots) {
-                        if (p.equals(p2)) {
-                            resultParkingLots.add(p);
-                            break;
-                        }
-                    }
-                }
-                int last = page * pageSize < parkingLots.size() ? page * pageSize : parkingLots.size();
-                if ((page - 1) * pageSize > parkingLots.size()) {
-                    throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
-                }
-                parkingLotPage.setPageContent(parkingLots.subList((page - 1) * pageSize, last));
-                parkingLotPage.setTotal(parkingLots.size());
-
-            }
-        }
-        return parkingLotPage;
-    }
 
     @Override
     public ParkingLot addEmployeeNewParkingLot(String id, ParkingLot parkingLot) {
@@ -249,14 +179,10 @@ public class EmployeeServiceImpl implements EmployeeService {
             } else {
                 BeanUtils.copyProperties(parkingLot, findParkingLot, "id", "nowAvailable", "name", "position");
                 return parkingLotRepository.save(findParkingLot);
-//                int result = parkingLotRepository.updateCapacityById(parkingLot.getId(), parkingLot.getCapacity());
-//                if (result == 1) {
-//                    return result;
-//                } else {
-//                    throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
-//                }
             }
         }
     }
+
+
 
 }

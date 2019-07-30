@@ -1,5 +1,6 @@
 package com.oocl.ita.parkinglot.controller;
 
+import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.model.ParkingLot;
@@ -7,6 +8,7 @@ import com.oocl.ita.parkinglot.service.EmployeeService;
 
 import com.oocl.ita.parkinglot.utils.SecurityUtils;
 
+import com.oocl.ita.parkinglot.vo.PageVO;
 import com.oocl.ita.parkinglot.vo.ParkingLotVO;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -47,20 +49,25 @@ public class EmployeeControllerTest {
     @Test
     public void should_return_employee_all_parkinglots_when_employee_is_exist () throws Exception{
         ParkingLot firstParkingLot = new ParkingLot();
+        firstParkingLot.setStatus(ParkingLotStatusEnum.EXIST.ordinal());
         ParkingLot secondParkingLot = new ParkingLot();
+        secondParkingLot.setStatus(ParkingLotStatusEnum.EXIST.ordinal());
         ParkingLot thirdParkingLot = new ParkingLot();
+        thirdParkingLot.setStatus(ParkingLotStatusEnum.EXIST.ordinal());
         ArrayList<ParkingLot> parkingLots = new ArrayList<>();
         parkingLots.add(firstParkingLot);
         parkingLots.add(secondParkingLot);
         parkingLots.add(thirdParkingLot);
+        PageVO<ParkingLot> parkingLotPageVO = new PageVO<>();
+        parkingLotPageVO.setPageContent(parkingLots);
 
-        when(employeeService.getEmployeeAllParkingLots(anyString())).thenReturn(parkingLots);
+        when(employeeService.getEmployeeAllParkingLots(anyString())).thenReturn(parkingLotPageVO);
 
         mockMvc.perform(get("/employees/{id}/parking-lots","1")
                 .header("token", SecurityUtils.getTestToken()))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(3));
+                .andExpect(jsonPath("$.data.pageContent.length()").value(3));
     }
 
    

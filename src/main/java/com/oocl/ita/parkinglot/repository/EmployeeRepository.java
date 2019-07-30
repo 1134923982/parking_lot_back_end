@@ -23,4 +23,6 @@ public interface EmployeeRepository extends JpaRepository<Employee,String>{
 
     List<Employee> findEmployeesByParkingLotsContains(ParkingLot parkingLot);
 
+
+
 }

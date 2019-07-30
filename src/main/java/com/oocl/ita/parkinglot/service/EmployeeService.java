@@ -10,19 +10,15 @@ import com.oocl.ita.parkinglot.vo.ParkingLotVO;
 import java.util.List;
 
 public interface EmployeeService {
-    List<ParkingLot> getEmployeeAllParkingLots(String parkingBoyId);
+    PageVO<ParkingLot> getEmployeeAllParkingLots(String Id);
 
     Employee getEmployeeById(String employeeId);
 
     List<Orders> getEmployeeOrdersByFinish(String id,boolean finish);
 
-
     ParkingLot updateParkingLotByEmployeeId(String id, ParkingLot parkingLot);
 
     ParkingLot addEmployeeNewParkingLot(String id, ParkingLot parkingLot);
-
-    PageVO<ParkingLot> findByConditions(String id , GetEmployeeParkingLotDTO getEmployeeParkingLotDTO);
-
 
     List<ParkingLotVO> getParkingLotVOsByEmployeeId(String id,int page, int pageSize);
 
