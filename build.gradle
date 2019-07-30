@@ -4,6 +4,7 @@ plugins {
 }
 
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'jacoco'
 
 group = 'com.oocl.ita'
 version = '0.0.1-SNAPSHOT'
@@ -25,3 +26,12 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 
 }
+
+jacocoTestReport {
+	reports {
+		xml.enabled false
+		html.enabled true
+	}
+}
+
+check.dependsOn jacocoTestReport

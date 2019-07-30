@@ -1,5 +1,6 @@
 package com.oocl.ita.parkinglot.controller;
 
+import com.google.gson.Gson;
 import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
@@ -10,14 +11,13 @@ import com.oocl.ita.parkinglot.utils.SecurityUtils;
 
 import com.oocl.ita.parkinglot.vo.PageVO;
 import com.oocl.ita.parkinglot.vo.ParkingLotVO;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -25,11 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import static com.oocl.ita.parkinglot.enums.CodeMsgEnum.PARAMETER_ERROR;
-
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -131,11 +130,24 @@ public class EmployeeControllerTest {
         List<Employee> employees = new ArrayList();
         employees.add(new Employee());
         employees.add(new Employee());
-        when(employeeService.findAllEmployees()).thenReturn(employees);
+        when(employeeService.findAllEmployees(anyInt())).thenReturn(employees);
         mockMvc.perform(get("/employees")
                 .header("token",SecurityUtils.getTestToken()))
                 .andDo(print())
                 .andExpect(jsonPath("$.data.length()").value(2));
+    }
+
+    @Test
+    public void should_return_employee_when_request_to_add_an_employee() throws Exception {
+        Employee employee = new Employee();
+        employee.setName("Test-name");
+        when(employeeService.createEmployee(any())).thenReturn(employee);
+        mockMvc.perform(post("/employees")
+                .header("token",SecurityUtils.getTestToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new Gson().toJson(employee)))
+                .andDo(print())
+                .andExpect(jsonPath("$.data.name").value("Test-name"));
     }
 
     @Test

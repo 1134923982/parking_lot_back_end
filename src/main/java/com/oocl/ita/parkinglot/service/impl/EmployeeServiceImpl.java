@@ -3,6 +3,7 @@ package com.oocl.ita.parkinglot.service.impl;
 import com.oocl.ita.parkinglot.enums.CodeMsgEnum;
 import com.oocl.ita.parkinglot.enums.OrdersStatusEnum;
 import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
+import com.oocl.ita.parkinglot.enums.RoleEnum;
 import com.oocl.ita.parkinglot.exception.ParkingLotException;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.oocl.ita.parkinglot.enums.CodeMsgEnum.CREATE_ERROR;
 
 
 @Service
@@ -211,13 +214,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> findAllEmployees() {
-        return employeeRepository.findAll();
+    public List<Employee> findAllEmployees(int role) {
+        return role >= RoleEnum.parkingBoy.ordinal() ? employeeRepository.findByRole(role) : employeeRepository.findAll();
     }
 
     @Override
     public Employee createEmployee(Employee employee) {
-        return null;
+        if (employee.getRole() < RoleEnum.admin.ordinal()) {
+            return employeeRepository.save(employee);
+        } else {
+            throw new ParkingLotException(CREATE_ERROR);
+        }
     }
-
 }

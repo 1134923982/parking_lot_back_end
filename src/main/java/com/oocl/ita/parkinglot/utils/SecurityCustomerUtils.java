@@ -1,7 +1,6 @@
 package com.oocl.ita.parkinglot.utils;
 
 import com.oocl.ita.parkinglot.model.Customer;
-import com.oocl.ita.parkinglot.model.Employee;
 
 public class SecurityCustomerUtils {
     private static String token;
