@@ -91,4 +91,9 @@ public class EmployeeController {
         return ResultVO.success(employeeService.createEmployee(employee));
     }
 
+    @PutMapping("/employees/{employeeId}")
+    public ResultVO<Employee> updateEmployee(@PathVariable String employeeId,@RequestBody Employee employee){
+        return ResultVO.success(employeeService.updateEmployee(employeeId,employee));
+    }
+
 }

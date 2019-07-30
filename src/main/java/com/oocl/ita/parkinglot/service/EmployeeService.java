@@ -27,4 +27,6 @@ public interface EmployeeService {
     List<Employee> findAllEmployees(int role);
 
     Employee createEmployee(Employee employee);
+
+    Employee updateEmployee(String employeeId,Employee employee);
 }

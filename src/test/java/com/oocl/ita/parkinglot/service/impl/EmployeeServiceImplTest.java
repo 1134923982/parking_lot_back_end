@@ -245,4 +245,14 @@ public class EmployeeServiceImplTest {
         List<Employee> employees = employeeService.findAllEmployees(0);
         assertEquals(2, employees.size());
     }
+
+    @Test
+    public void should_return_updated_employee_when_update_employee(){
+        Employee employee = new Employee();
+        employee.setName("zhangsan");
+        when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.ofNullable(employee));
+        when(employeeRepository.save(employee)).thenReturn(employee);
+        Employee updateEmployee=employeeService.updateEmployee(anyString(),employee);
+        assertEquals(employee.getName(),updateEmployee.getName());
+    }
 }

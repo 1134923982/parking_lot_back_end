@@ -29,6 +29,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -175,4 +176,17 @@ public class EmployeeControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("$.data.length()").value(3));
     }
+    @Test
+    public void should_return_employee_when_request_to_update_employee() throws Exception {
+        Employee employee = new Employee();
+        employee.setName("Test-name");
+        when(employeeService.updateEmployee(anyString(),any())).thenReturn(employee);
+        mockMvc.perform(put("/employees/1")
+                .header("token",SecurityUtils.getTestToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new Gson().toJson(employee)))
+                .andDo(print())
+                .andExpect(jsonPath("$.data.name").value("Test-name"));
+    }
+
 }

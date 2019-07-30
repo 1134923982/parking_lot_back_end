@@ -226,4 +226,13 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new ParkingLotException(CREATE_ERROR);
         }
     }
+
+    @Override
+    public Employee updateEmployee(String employeeId,Employee employee) {
+        Employee oldEmployee = employeeRepository.findById(employeeId).get();
+        BeanUtils.copyProperties(employee,oldEmployee,"id","password");
+        employeeRepository.save(oldEmployee);
+        oldEmployee.setPassword(null);
+        return oldEmployee;
+    }
 }
