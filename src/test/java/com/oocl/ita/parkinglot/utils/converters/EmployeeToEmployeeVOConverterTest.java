@@ -17,6 +17,13 @@ import static org.junit.Assert.*;
 public class EmployeeToEmployeeVOConverterTest {
 
     @Test
+    public void should_return_employeeVO_type_when_given_employee() {
+        Employee employee = new Employee("name", "idCard", "gender", "phone", 0, "managedId");
+
+        assertEquals(EmployeesVO.class, EmployeeToEmployeeVOConverter.convert(employee).getClass());
+    }
+
+    @Test
     public void should_return_employeeVO_when_given_employee() {
         Employee employee = new Employee("name", "idCard", "gender", "phone", 0, "managedId");
 
