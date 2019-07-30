@@ -3,7 +3,6 @@ package com.oocl.ita.parkinglot.controller;
 import com.oocl.ita.parkinglot.model.Customer;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.service.CustomerService;
-import com.oocl.ita.parkinglot.utils.JwtToken;
 import com.oocl.ita.parkinglot.utils.SecurityCustomerUtils;
 import com.oocl.ita.parkinglot.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;

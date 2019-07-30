@@ -1,6 +1,5 @@
 package com.oocl.ita.parkinglot.controller;
 
-import com.oocl.ita.parkinglot.dto.GetEmployeeParkingLotDTO;
 import com.oocl.ita.parkinglot.enums.RoleEnum;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
@@ -78,8 +77,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees")
-    public ResultVO<List<Employee>> getEmployeeList(){
-        return ResultVO.success(employeeService.findAllEmployees());
+    public ResultVO<List<Employee>> getEmployeeList(@RequestParam(defaultValue = "-1") int role){
+        return ResultVO.success(employeeService.findAllEmployees(role));
     }
 
     @PostMapping("/employees")

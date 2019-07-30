@@ -1,8 +1,6 @@
 package com.oocl.ita.parkinglot.service.impl;
 
-import com.oocl.ita.parkinglot.enums.CodeMsgEnum;
 import com.oocl.ita.parkinglot.exception.ParkingLotException;
-import com.oocl.ita.parkinglot.model.Customer;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.repository.CustomerRepository;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;

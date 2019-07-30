@@ -58,7 +58,7 @@ public class EmployeeServiceImplTest {
         when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
         PageVO<ParkingLot> employeeAllParkingLots = employeeService.getEmployeeAllParkingLots(employee.getId());
 
-        assertEquals(employeeAllParkingLots.getPageContent().size(),2);
+        assertEquals(employeeAllParkingLots.getPageContent().size(), 2);
 
     }
 
@@ -72,17 +72,17 @@ public class EmployeeServiceImplTest {
     }
 
     @Test
-    public void should_return_employee_by_id(){
+    public void should_return_employee_by_id() {
         Employee employee = new Employee();
         employee.setId("1");
         employee.setTelephone("13587671359");
         when(employeeRepository.findById(anyString())).thenReturn(java.util.Optional.of(employee));
         Employee reEmployee = employeeService.getEmployeeById("1");
-        assertEquals(reEmployee.getTelephone(),employee.getTelephone());
+        assertEquals(reEmployee.getTelephone(), employee.getTelephone());
     }
 
     @Test
-    public void should_get_employee_unfinish_orders(){
+    public void should_get_employee_unfinish_orders() {
         Employee employee = new Employee();
         Orders firstOrder = new Orders();
         firstOrder.setParkingBoy(employee);
@@ -98,11 +98,11 @@ public class EmployeeServiceImplTest {
         when(ordersRepository.findEmployeeUnfinishOrders(anyString())).thenReturn(orders);
 
         List<Orders> findOrders = employeeService.getEmployeeOrdersByFinish(employee.getId(), false);
-        assertEquals(findOrders.size(),2);
+        assertEquals(findOrders.size(), 2);
     }
 
     @Test
-    public void should_get_employee_finish_orders(){
+    public void should_get_employee_finish_orders() {
         Employee employee = new Employee();
         Orders firstOrder = new Orders();
         firstOrder.setParkingBoy(employee);
@@ -121,11 +121,11 @@ public class EmployeeServiceImplTest {
         when(ordersRepository.findEmployeeFetchingFinishOrders(anyString())).thenReturn(secondOrders);
 
         List<Orders> findOrders = employeeService.getEmployeeOrdersByFinish(employee.getId(), true);
-        assertEquals(findOrders.size(),3);
+        assertEquals(findOrders.size(), 3);
     }
 
     @Test
-    public void should_return_all_parking_lots_with_parking_boy_by_manager_when_get_parking_lot_by_manager_id_and_page_size(){
+    public void should_return_all_parking_lots_with_parking_boy_by_manager_when_get_parking_lot_by_manager_id_and_page_size() {
         Employee manager = new Employee();
         manager.setId("1");
         Employee parkingBoy1 = new Employee();
@@ -134,8 +134,8 @@ public class EmployeeServiceImplTest {
         employees.add(parkingBoy1);
         employees.add(parkingBoy2);
         List<ParkingLot> parkingLots = new ArrayList<>();
-        parkingLots.add(new ParkingLot("1","a","aa",10,10,1 ));
-        parkingLots.add(new ParkingLot("2","a","aa",10,10,1 ));
+        parkingLots.add(new ParkingLot("1", "a", "aa", 10, 10, 1));
+        parkingLots.add(new ParkingLot("2", "a", "aa", 10, 10, 1));
         manager.setParkingLots(parkingLots);
 
         when(employeeRepository.findEmployeesByParkingLotsContains(Mockito.any())).thenReturn(employees);
@@ -146,7 +146,7 @@ public class EmployeeServiceImplTest {
     }
 
     @Test
-    public void should_return_null_array_by_manager_when_get_parking_lot_page_and_page_size_is_un_vaild(){
+    public void should_return_null_array_by_manager_when_get_parking_lot_page_and_page_size_is_un_vaild() {
         Employee manager = new Employee();
         manager.setId("1");
         Employee parkingBoy1 = new Employee();
@@ -155,8 +155,8 @@ public class EmployeeServiceImplTest {
         employees.add(parkingBoy1);
         employees.add(parkingBoy2);
         List<ParkingLot> parkingLots = new ArrayList<>();
-        parkingLots.add(new ParkingLot("1","a","aa",10,10,1 ));
-        parkingLots.add(new ParkingLot("2","a","aa",10,10,1 ));
+        parkingLots.add(new ParkingLot("1", "a", "aa", 10, 10, 1));
+        parkingLots.add(new ParkingLot("2", "a", "aa", 10, 10, 1));
         manager.setParkingLots(parkingLots);
 
         when(employeeRepository.findEmployeesByParkingLotsContains(Mockito.any())).thenReturn(employees);
@@ -167,10 +167,30 @@ public class EmployeeServiceImplTest {
     }
 
     @Test
-    public void should_return_the_employee_list_when_find_all(){
+    public void should_return_the_employee_list_when_find_all() {
         List employeeList = new ArrayList();
         employeeList.add(new Employee());
         when(employeeRepository.findAll()).thenReturn(employeeList);
-        assertEquals(employeeList.size(),employeeService.findAllEmployees().size());
+
+        List<Employee> resultList = employeeService.findAllEmployees(-1);
+        assertEquals(employeeList.size(), resultList.size());
+    }
+
+    @Test
+    public void should_return_employee_when_create_employee() {
+        Employee employee = new Employee();
+        employee.setName("zhangsan");
+        when(employeeRepository.save(employee)).thenReturn(employee);
+        assertEquals(employee, employeeService.createEmployee(employee));
+    }
+
+    @Test
+    public void should_return_employees_whose_role_is_0_when_role_is_0() {
+        List<Employee> employeesList = new ArrayList<>();
+        employeesList.add(new Employee());
+        employeesList.add(new Employee());
+        when(employeeRepository.findByRole(anyInt())).thenReturn(employeesList);
+        List<Employee> employees = employeeService.findAllEmployees(0);
+        assertEquals(2, employees.size());
     }
 }
