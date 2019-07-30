@@ -168,6 +168,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     }
 
+    @Override
     public ParkingLot updateParkingLotByEmployeeId(String id, ParkingLot parkingLot) {
         Employee employee = employeeRepository.findById(id).orElse(null);
         if (employee == null) {
@@ -183,6 +184,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
+    @Override
+    public List<Employee> findAllEmployees() {
+        return employeeRepository.findAll();
+    }
 
+    @Override
+    public Employee createEmployee(Employee employee) {
+        return null;
+    }
 
 }

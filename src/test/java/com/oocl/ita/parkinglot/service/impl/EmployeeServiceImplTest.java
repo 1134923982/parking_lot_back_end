@@ -166,5 +166,11 @@ public class EmployeeServiceImplTest {
         assertEquals(0, parkingLotVOsByEmployeeId.size());
     }
 
-
+    @Test
+    public void should_return_the_employee_list_when_find_all(){
+        List employeeList = new ArrayList();
+        employeeList.add(new Employee());
+        when(employeeRepository.findAll()).thenReturn(employeeList);
+        assertEquals(employeeList.size(),employeeService.findAllEmployees().size());
+    }
 }

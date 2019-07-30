@@ -22,4 +22,7 @@ public interface EmployeeService {
 
     List<ParkingLotVO> getParkingLotVOsByEmployeeId(String id,int page, int pageSize);
 
+    List<Employee> findAllEmployees();
+
+    Employee createEmployee(Employee employee);
 }
