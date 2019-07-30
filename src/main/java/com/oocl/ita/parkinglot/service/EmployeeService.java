@@ -4,6 +4,7 @@ import com.oocl.ita.parkinglot.dto.GetEmployeeParkingLotDTO;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.model.ParkingLot;
+import com.oocl.ita.parkinglot.vo.PageVO;
 import com.oocl.ita.parkinglot.vo.ParkingLotVO;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface EmployeeService {
 
     ParkingLot addEmployeeNewParkingLot(String id, ParkingLot parkingLot);
 
-    List<ParkingLot> findByConditions(String id , GetEmployeeParkingLotDTO getEmployeeParkingLotDTO);
+    PageVO<ParkingLot> findByConditions(String id , GetEmployeeParkingLotDTO getEmployeeParkingLotDTO);
 
 
     List<ParkingLotVO> getParkingLotVOsByEmployeeId(String id,int page, int pageSize);

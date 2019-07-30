@@ -83,8 +83,4 @@ public class EmployeeController {
         return ResultVO.success(employeeService.addEmployeeNewParkingLot(id, parkingLot));
     }
 
-//    @GetMapping("/employees/{id}/parking-lots")
-//    public ResultVO addEmployeeNewParkingLot(@PathVariable(value = "id") String id) {
-//        return ResultVO.success(employeeRepository.findById(id).orElse(null).getParkingLots());
-//    }
 }

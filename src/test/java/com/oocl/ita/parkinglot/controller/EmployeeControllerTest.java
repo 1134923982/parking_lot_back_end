@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Ignore
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -63,17 +63,7 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$.length()").value(3));
     }
 
-    @Test
-    public void should_return_employee_all_parkinglots_when_employee_is_not_exist () throws Exception{
-
-        when(employeeService.getEmployeeAllParkingLots(anyString())).thenReturn(null);
-
-        mockMvc.perform(get("/employees/{id}/parking-lots","0")
-                .header("token",SecurityUtils.getTestToken()))
-                .andDo(print())
-                .andExpect(jsonPath("$.retCode").value(PARAMETER_ERROR.getCode()));
-
-    }
+   
     @Test
     public void should_return_employee_when_request_by_employee_id() throws Exception {
         Employee employee = new Employee();

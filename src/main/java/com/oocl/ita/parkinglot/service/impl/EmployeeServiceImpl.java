@@ -12,13 +12,10 @@ import com.oocl.ita.parkinglot.repository.EmployeeRepository;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
 import com.oocl.ita.parkinglot.repository.ParkingLotRepository;
 import com.oocl.ita.parkinglot.service.EmployeeService;
-import com.oocl.ita.parkinglot.utils.SecurityUtils;
+import com.oocl.ita.parkinglot.vo.PageVO;
 import com.oocl.ita.parkinglot.vo.ParkingLotVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -141,15 +138,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         return null;
     }
 
-    public List<ParkingLot> findByConditions(String id, GetEmployeeParkingLotDTO getEmployeeParkingLotDTO) {
+    public PageVO<ParkingLot> findByConditions(String id, GetEmployeeParkingLotDTO getEmployeeParkingLotDTO) {
         Employee employee = employeeRepository.findById(id).orElse(null);
         int page = getEmployeeParkingLotDTO.getPage();
         int pageSize = getEmployeeParkingLotDTO.getPageSize();
+        PageVO<ParkingLot> parkingLotPage = new PageVO<ParkingLot>();
         if (employee == null) {
             throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
         }
         if (page == -1 && pageSize == -1) {
-            return employee.getParkingLots();
+            parkingLotPage.setPageContent(employee.getParkingLots());
+            parkingLotPage.setTotal(employee.getParkingLots().size());
         } else {
             String name = getEmployeeParkingLotDTO.getName();
             String position = getEmployeeParkingLotDTO.getPosition();
@@ -162,7 +161,9 @@ public class EmployeeServiceImpl implements EmployeeService {
                 if ((page - 1) * pageSize > parkingLots.size()) {
                     throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
                 }
-                return parkingLots.subList((page - 1) * pageSize, last);
+                parkingLotPage.setPageContent(parkingLots.subList((page - 1) * pageSize, last));
+                parkingLotPage.setTotal(parkingLots.size());
+
 
 
             } else {
@@ -172,13 +173,11 @@ public class EmployeeServiceImpl implements EmployeeService {
                         List<Predicate> predicateList = new ArrayList<>();
                         if (!StringUtils.isEmpty(name)) {
                             Path namePath = root.get("name");
-                            Predicate p = criteriaBuilder.equal(namePath, name);
-                            predicateList.add(p);
+                            predicateList.add(criteriaBuilder.like(namePath, "%"  + name + "%" ));
                         }
                         if (!StringUtils.isEmpty(position)) {
                             Path positionPath = root.get("position");
-                            Predicate p = criteriaBuilder.equal(positionPath, position);
-                            predicateList.add(p);
+                            predicateList.add(criteriaBuilder.like(positionPath, "%" + position + "%"));
                         }
                         Path statusPath = root.get("status");
                         Predicate p = criteriaBuilder.equal(statusPath, 0);
@@ -205,11 +204,12 @@ public class EmployeeServiceImpl implements EmployeeService {
                 if ((page - 1) * pageSize > parkingLots.size()) {
                     throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
                 }
-                return parkingLots.subList((page - 1) * pageSize, last);
+                parkingLotPage.setPageContent(parkingLots.subList((page - 1) * pageSize, last));
+                parkingLotPage.setTotal(parkingLots.size());
 
             }
-
         }
+        return parkingLotPage;
     }
 
     @Override
