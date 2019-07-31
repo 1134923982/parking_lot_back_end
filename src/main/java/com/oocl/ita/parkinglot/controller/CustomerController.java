@@ -1,6 +1,8 @@
 package com.oocl.ita.parkinglot.controller;
 
 import com.oocl.ita.parkinglot.dto.CustomerUpdateOrderStatusDTO;
+import com.oocl.ita.parkinglot.enums.CodeMsgEnum;
+import com.oocl.ita.parkinglot.exception.ParkingLotException;
 import com.oocl.ita.parkinglot.model.Customer;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.service.CustomerService;
@@ -44,5 +46,10 @@ public class CustomerController {
     @PatchMapping("/customers/{customerId}/orders/{ordersId}")
     public ResultVO<Orders> updateOrdersStatusByCustomerIdAndOrdersId(@PathVariable("customerId") String customerId, @PathVariable("ordersId") String ordersId, @RequestBody CustomerUpdateOrderStatusDTO dto) {
         return ResultVO.success(customerService.updateOrdersStatus(customerId, ordersId, dto.getStatus()));
+    }
+
+    @GetMapping("/customers/orders/price")
+    public ResultVO getBudgetPrice (@RequestParam(value = "parkingTime") long parkingTime, @RequestParam(value = "fetchingTime") long fetchingTime ,@RequestParam(value = "position", defaultValue = "ZHA") String position) {
+        return ResultVO.success(customerService.getBudgetPriceByParkingTime(parkingTime,fetchingTime,position));
     }
 }
