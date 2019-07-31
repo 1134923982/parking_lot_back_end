@@ -12,6 +12,7 @@ import com.oocl.ita.parkinglot.repository.EmployeeRepository;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
 import com.oocl.ita.parkinglot.repository.ParkingLotRepository;
 import com.oocl.ita.parkinglot.service.EmployeeService;
+import com.oocl.ita.parkinglot.utils.SecurityUtils;
 import com.oocl.ita.parkinglot.utils.converters.EmployeeToEmployeeVOConverter;
 import com.oocl.ita.parkinglot.vo.EmployeesVO;
 import com.oocl.ita.parkinglot.vo.PageVO;
@@ -221,7 +222,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee createEmployee(Employee employee) {
-        if (employee.getRole() < RoleEnum.admin.ordinal()) {
+        Employee newEmployee = employeeRepository.findByTelephone(employee.getTelephone());
+        if (newEmployee == null && employee.getRole() < RoleEnum.admin.ordinal()) {
             return employeeRepository.save(employee);
         } else {
             throw new ParkingLotException(CREATE_ERROR);

@@ -332,4 +332,12 @@ public class EmployeeServiceImplTest {
         Employee updateEmployee=employeeService.updateEmployeeById(anyString(),employee);
         assertEquals(employee.getName(),updateEmployee.getName());
     }
+
+    @Test(expected = ParkingLotException.class)
+    public void should_return_error_when_create_a_employee_telephone_is_register_by_other_user() {
+        Employee employee = new Employee();
+        employee.setTelephone("123");
+        when(employeeRepository.findByTelephone(anyString())).thenReturn(employee);
+        employeeService.createEmployee(employee);
+    }
 }

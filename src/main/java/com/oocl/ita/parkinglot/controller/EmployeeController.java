@@ -30,7 +30,7 @@ public class EmployeeController {
     public ResultVO<Employee> getEmployeeById(@PathVariable String employeeId) {
         Employee resultEmployee = new Employee();
         if (SecurityUtils.getEmployee().getRole() == RoleEnum.parkingBoy.ordinal()) {
-            BeanUtils.copyProperties(SecurityUtils.getEmployee(), resultEmployee, "password");
+            BeanUtils.copyProperties(employeeService.getEmployeeById(SecurityUtils.getEmployee().getId()), resultEmployee, "password");
             return ResultVO.success(resultEmployee);
         } else if (SecurityUtils.getEmployee().getRole() >= RoleEnum.manager.ordinal()) {
             BeanUtils.copyProperties(employeeService.getEmployeeById(employeeId), resultEmployee, "password");

@@ -4,7 +4,9 @@ import com.oocl.ita.parkinglot.model.Customer;
 import com.oocl.ita.parkinglot.model.Employee;
 import com.oocl.ita.parkinglot.service.CertificationService;
 import com.oocl.ita.parkinglot.utils.JwtToken;
+import com.oocl.ita.parkinglot.utils.SecurityUtils;
 import com.oocl.ita.parkinglot.vo.ResultVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,12 +23,18 @@ public class CertificationController {
 
     @PostMapping("/login")
     public ResultVO<String> login(@RequestBody Employee employee){
-        Employee reEmployee = certificationService.login(employee);
-        if(reEmployee!=null) {
-            return ResultVO.success(JwtToken.encode(reEmployee));
-        }else{
+        if(certificationService.login(employee)==null){
             return ResultVO.error(USER_NOT_EXSIST);
         }
+        Employee reEmployee = new Employee();
+        BeanUtils.copyProperties(certificationService.login(employee)
+                ,reEmployee,"name","password","idCardNumber","gender","telephone","managedId");
+        return ResultVO.success(JwtToken.encode(reEmployee));
+    }
+
+    @GetMapping("/current-user")
+    public ResultVO<Employee> getCurrentUser() {
+        return ResultVO.success(SecurityUtils.getEmployee());
     }
 
     @PostMapping("/customers/login")
