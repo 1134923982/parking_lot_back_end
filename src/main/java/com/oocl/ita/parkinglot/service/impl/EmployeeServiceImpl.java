@@ -15,6 +15,7 @@ import com.oocl.ita.parkinglot.service.EmployeeService;
 import com.oocl.ita.parkinglot.utils.SecurityUtils;
 import com.oocl.ita.parkinglot.utils.converters.EmployeeToEmployeeVOConverter;
 import com.oocl.ita.parkinglot.vo.EmployeesVO;
+import com.oocl.ita.parkinglot.vo.OrdersTypeVO;
 import com.oocl.ita.parkinglot.vo.PageVO;
 import com.oocl.ita.parkinglot.vo.ParkingLotVO;
 import org.springframework.beans.BeanUtils;
@@ -80,9 +81,32 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private List<Orders> getOrdersByManagerId(Employee employee) {
         List<Orders> fetchingCarOrdersByManagerId = ordersRepository.findFetchingCarOrdersByManagerId(employee.getId());
-        fetchingCarOrdersByManagerId = fetchingCarOrdersByManagerId.stream().map(orders -> new Orders(orders.getId(), orders.getOrderNumber(), orders.getStatus(), orders.getCarNumber(), orders.getParkingLot())).collect(Collectors.toList());
+
+        fetchingCarOrdersByManagerId = fetchingCarOrdersByManagerId.stream()
+                .map(orders -> {
+                    OrdersTypeVO ordersTypeVO = new OrdersTypeVO();
+                    ordersTypeVO.setCarNumber(orders.getCarNumber());
+                    ordersTypeVO.setId(orders.getId());
+                    ordersTypeVO.setStatus(orders.getStatus());
+                    ordersTypeVO.setParkingLot(orders.getParkingLot());
+                    ordersTypeVO.setType(1);
+                    return ordersTypeVO;
+                })
+                .collect(Collectors.toList());
+
         List<Orders> parkingCarOrdersByManagerId = ordersRepository.findParkingCarOrdersByManagerId(employee.getId());
-        parkingCarOrdersByManagerId = parkingCarOrdersByManagerId.stream().map(orders -> new Orders(orders.getId(), orders.getOrderNumber(), orders.getStatus(), orders.getCarNumber(), orders.getParkingLot())).collect(Collectors.toList());
+
+        parkingCarOrdersByManagerId = parkingCarOrdersByManagerId.stream()
+                .map(orders -> {
+                    OrdersTypeVO ordersTypeVO = new OrdersTypeVO();
+                    ordersTypeVO.setCarNumber(orders.getCarNumber());
+                    ordersTypeVO.setId(orders.getId());
+                    ordersTypeVO.setStatus(orders.getStatus());
+                    ordersTypeVO.setParkingLot(orders.getParkingLot());
+                    ordersTypeVO.setType(0);
+                    return ordersTypeVO;
+                })
+                .collect(Collectors.toList());
         parkingCarOrdersByManagerId.addAll(fetchingCarOrdersByManagerId);
         return parkingCarOrdersByManagerId;
     }
