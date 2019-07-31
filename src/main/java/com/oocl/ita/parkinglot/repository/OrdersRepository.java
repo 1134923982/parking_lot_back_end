@@ -20,7 +20,7 @@ public interface OrdersRepository extends JpaRepository<Orders , String> {
     @Query(value = "select * from Orders where parking_boy_id = :id and status >= 3", nativeQuery = true)
     List<Orders> findEmployeeParkingFinishOrders(@Param(value = "id") String id);
 
-    @Query(value = "select * from Orders where fetching_boy_id = :id and status = 6", nativeQuery = true)
+    @Query(value = "select * from Orders where fetching_boy_id = :id and status = 7", nativeQuery = true)
     List<Orders> findEmployeeFetchingFinishOrders(@Param(value = "id") String id);
 
     @Query(value = "select * from Orders where customer_id = :id and status = 7", nativeQuery = true)
