@@ -16,11 +16,11 @@ public class Employee {
     private int state;
 
     private String name;
-
+    @Column(unique = true)
     private String idCardNumber;
 
     private String gender;
-
+    @Column(unique = true)
     private String telephone;
 
     private int status;

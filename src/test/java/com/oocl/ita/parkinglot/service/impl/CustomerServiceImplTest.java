@@ -1,11 +1,14 @@
 package com.oocl.ita.parkinglot.service.impl;
 
+import com.oocl.ita.parkinglot.enums.CodeMsgEnum;
+import com.oocl.ita.parkinglot.enums.OrdersStatusEnum;
 import com.oocl.ita.parkinglot.exception.ParkingLotException;
 import com.oocl.ita.parkinglot.model.Customer;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.repository.CustomerRepository;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
 import com.oocl.ita.parkinglot.service.CustomerService;
+import org.aspectj.weaver.ast.Or;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,4 +94,109 @@ public class CustomerServiceImplTest {
         assertEquals(customerService.createCustomerOrders("1",orders).getStatus(),orders.getStatus());
     }
 
+    @Test(expected = ParkingLotException.class)
+    public void should_throw_exception_when_customer_not_exists() {
+        when(customerRepository.findById(anyString()).orElseThrow(() -> new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR))).thenThrow(ParkingLotException.class);
+
+        customerService.doesTheCustomerOwnTheOrder("not exists", "any");
+    }
+
+    @Test(expected = ParkingLotException.class)
+    public void should_throw_exception_when_order_not_exists() {
+        Customer customer = new Customer();
+
+        when(customerRepository.findById(anyString())).thenReturn(java.util.Optional.of(customer));
+        when(ordersRepository.findById(anyString()).orElseThrow(() -> new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR))).thenThrow(ParkingLotException.class);
+
+        customerService.doesTheCustomerOwnTheOrder("exists", "not exists");
+    }
+
+    @Test
+    public void should_return_false_when_order_owner_is_not_the_customer() {
+        Customer customer = new Customer();
+        Orders orders = new Orders();
+        orders.setCustomer(customer);
+
+        when(customerRepository.findById(anyString())).thenReturn(java.util.Optional.of(new Customer()));
+        when(ordersRepository.findById(anyString())).thenReturn(java.util.Optional.of(orders));
+
+        assertFalse(customerService.doesTheCustomerOwnTheOrder("exists", "exists"));
+    }
+
+    @Test
+    public void should_return_true_when_order_owner_is_the_customer() {
+        Customer customer = new Customer();
+        customer.setId("exists");
+
+        Orders orders = new Orders();
+        orders.setCustomer(customer);
+
+        when(customerRepository.findById(anyString())).thenReturn(java.util.Optional.of(customer));
+        when(ordersRepository.findById(anyString())).thenReturn(java.util.Optional.of(orders));
+
+        assertTrue(customerService.doesTheCustomerOwnTheOrder("exists", "exists"));
+    }
+
+    @Test
+    public void should_return_false_when_status_is_not_valid() {
+        int status = OrdersStatusEnum.PARK_ORDER_NOT_RECEIVED.ordinal();
+        Orders orders = new Orders();
+        orders.setStatus(OrdersStatusEnum.PARK_ORDER_RECEIVED.ordinal());
+
+        assertFalse(customerService.isValidWaitingForUpdateStatus(orders, status));
+    }
+
+    @Test
+    public void should_return_true_when_status_is_not_valid() {
+        int status = OrdersStatusEnum.FETCH_ORDER_CUSTOMER_CONFIRMED.ordinal();
+        Orders orders = new Orders();
+        orders.setStatus(OrdersStatusEnum.FETCH_ORDER_COMPLETED.ordinal());
+
+        assertTrue(customerService.isValidWaitingForUpdateStatus(orders, status));
+    }
+
+
+    @Test(expected = ParkingLotException.class)
+    public void should_throw_exception_when_wait_for_update_status_is_not_valid() {
+        Customer customer = new Customer();
+        Orders orders = new Orders();
+        orders.setCustomer(customer);
+        orders.setStatus(OrdersStatusEnum.PARK_ORDER_NOT_RECEIVED.ordinal());
+
+        when(customerRepository.findById(anyString())).thenReturn(java.util.Optional.of(customer));
+        when(ordersRepository.findById(anyString())).thenReturn(java.util.Optional.of(orders));
+        when(ordersRepository.getOne(anyString())).thenReturn(orders);
+
+        customerService.updateOrdersStatus("exists", "exists", -1);
+    }
+
+    @Test(expected = ParkingLotException.class)
+    public void should_throw_exception_when_customer_not_own_the_order() {
+        Customer customer = new Customer();
+        Orders orders = new Orders();
+        orders.setCustomer(customer);
+
+        when(customerRepository.findById(anyString())).thenReturn(java.util.Optional.of(new Customer()));
+        when(ordersRepository.findById(anyString())).thenReturn(java.util.Optional.of(orders));
+        when(ordersRepository.getOne(anyString())).thenReturn(orders);
+
+        customerService.updateOrdersStatus("exists", "exists", -1);
+    }
+
+    @Test
+    public void should_return_updated_order_when_customer_and_order_is_in_valid_condition() {
+        Customer customer = new Customer();
+        customer.setId("is me");
+        Orders orders = new Orders();
+        orders.setCustomer(customer);
+        orders.setStatus(OrdersStatusEnum.FETCH_ORDER_COMPLETED.ordinal());
+
+        when(customerRepository.findById(anyString())).thenReturn(java.util.Optional.of(customer));
+        when(ordersRepository.findById(anyString())).thenReturn(java.util.Optional.of(orders));
+        when(ordersRepository.getOne(anyString())).thenReturn(orders);
+
+        int expectStatus = OrdersStatusEnum.FETCH_ORDER_CUSTOMER_CONFIRMED.ordinal();
+        int actualStatus = customerService.updateOrdersStatus("is me", "any", OrdersStatusEnum.FETCH_ORDER_CUSTOMER_CONFIRMED.ordinal()).getStatus();
+        assertEquals(expectStatus, actualStatus);
+    }
 }

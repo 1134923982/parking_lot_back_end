@@ -25,8 +25,8 @@ public class OrdersRepositoryTest {
     @Before
     public void setUp() throws Exception {
         Employee manager = new Employee("manager","1","male","123",1,"");
-        Employee parkingBoy1 = new Employee("boy1","2","male","123",1,"1");
-        Employee parkingBoy2 = new Employee("boy2","3","male","123",1,"1");
+        Employee parkingBoy1 = new Employee("boy1","2","male","1234",1,"1");
+        Employee parkingBoy2 = new Employee("boy2","3","male","1235",1,"1");
         Customer customer = new Customer();
         customer.setId("1");
 

@@ -32,8 +32,13 @@ public class CertificationController {
         }
         Employee reEmployee = new Employee();
         BeanUtils.copyProperties(certificationService.login(employee)
-                ,reEmployee,"name","idCardNumber","gender","telephone","managedId");
+                ,reEmployee,"name","password","idCardNumber","gender","telephone","managedId");
         return ResultVO.success(JwtToken.encode(reEmployee));
+    }
+
+    @GetMapping("/current-user")
+    public ResultVO<Employee> getCurrentUser() {
+        return ResultVO.success(SecurityUtils.getEmployee());
     }
     @ApiOperation(value = "login" ,  notes="customer login")
     @PostMapping("/customers/login")
