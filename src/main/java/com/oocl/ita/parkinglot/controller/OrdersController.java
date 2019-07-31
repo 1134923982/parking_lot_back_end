@@ -2,6 +2,8 @@ package com.oocl.ita.parkinglot.controller;
 
 
 
+import com.oocl.ita.parkinglot.annotation.Auth;
+import com.oocl.ita.parkinglot.enums.RoleEnum;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
 import com.oocl.ita.parkinglot.vo.ResultVO;
@@ -27,6 +29,7 @@ public class OrdersController {
     @Autowired
     private OrdersService ordersService;
 
+    @Auth(RoleEnum.parkingBoy)
     @ApiOperation(value = "getAllOrders" ,  notes="获取所有orders列表")
     @GetMapping
     public ResultVO<List<Orders>> getAllOrders () {
@@ -34,6 +37,7 @@ public class OrdersController {
         return ResultVO.success(allNotReceiptOrders);
     }
 
+    @Auth(RoleEnum.parkingBoy)
     @ApiOperation(value = "updateOrder" ,  notes="更新orders")
     @PatchMapping
     public ResultVO updateOrder (@RequestBody UpdateOrdersStatusDTO dto) {
