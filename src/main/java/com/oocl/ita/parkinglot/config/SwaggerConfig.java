@@ -1,5 +1,6 @@
 package com.oocl.ita.parkinglot.config;
 
+import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,10 @@ import springfox.documentation.spring.web.plugins.Docket;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Gordon
+ * @version 创建时间 ： 2019/7/31.
+ */
 @Configuration
 public class SwaggerConfig {
     @Bean
@@ -33,6 +38,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.any())
+                .paths(Predicates.not(PathSelectors.regex("/error.*")))
                 .build()
                 .globalOperationParameters(pars)
                 .apiInfo(apiInfo());
@@ -40,8 +46,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("easy parking")
-                .contact(new Contact("easy parking", "", ""))
+                .title("Easy parking")
+                .contact(new Contact("Easy parking", "", ""))
                 .version("1.0")
                 .description("EASY PARKING REST API")
                 .build();

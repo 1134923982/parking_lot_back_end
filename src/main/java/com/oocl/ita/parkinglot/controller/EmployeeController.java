@@ -10,6 +10,7 @@ import com.oocl.ita.parkinglot.service.EmployeeService;
 import com.oocl.ita.parkinglot.utils.SecurityUtils;
 import com.oocl.ita.parkinglot.vo.ParkingLotVO;
 import com.oocl.ita.parkinglot.vo.ResultVO;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import static com.oocl.ita.parkinglot.enums.CodeMsgEnum.PARAMETER_ERROR;
 
+@Api(value = "Employee Api",description = "Employee相关API")
 @RestController
 public class EmployeeController {
 

@@ -17,7 +17,7 @@ import static com.oocl.ita.parkinglot.enums.CodeMsgEnum.USER_NOT_EXSIST;
 /**
  * @author Gordon
  */
-@Api(value = "AuthApi",description = "授权相关API")
+@Api(value = "Certification Api",description = "授权相关API")
 @RestController
 public class CertificationController {
 

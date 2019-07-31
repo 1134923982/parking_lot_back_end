@@ -9,6 +9,7 @@ import com.oocl.ita.parkinglot.vo.ResultVO;
 import com.oocl.ita.parkinglot.dto.UpdateOrdersStatusDTO;
 import com.oocl.ita.parkinglot.service.OrdersService;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
+@Api(value = "Orders Api",description = "Orders相关API")
 public class OrdersController {
 
     @Autowired
