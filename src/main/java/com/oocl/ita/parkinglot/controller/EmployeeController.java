@@ -30,7 +30,7 @@ public class EmployeeController {
     public ResultVO<Employee> getEmployeeById(@PathVariable String employeeId) {
         Employee resultEmployee = new Employee();
         if (SecurityUtils.getEmployee().getRole() == RoleEnum.parkingBoy.ordinal()) {
-            BeanUtils.copyProperties(SecurityUtils.getEmployee(), resultEmployee, "password");
+            BeanUtils.copyProperties(employeeService.getEmployeeById(SecurityUtils.getEmployee().getId()), resultEmployee, "password");
             return ResultVO.success(resultEmployee);
         } else if (SecurityUtils.getEmployee().getRole() >= RoleEnum.manager.ordinal()) {
             BeanUtils.copyProperties(employeeService.getEmployeeById(employeeId), resultEmployee, "password");
@@ -71,6 +71,11 @@ public class EmployeeController {
         return ResultVO.success(employeeService.updateParkingLotByEmployeeId(id, parkingLot));
     }
 
+    @PatchMapping("/employees/{id}")
+    public ResultVO updateEmployee(@PathVariable("id") String id, @RequestBody Employee employee) {
+        return ResultVO.success(employeeService.updateEmployee(employee));
+    }
+
     @PostMapping("/employees/{id}/parking-lots")
     public ResultVO addEmployeeNewParkingLot(@PathVariable(value = "id") String id, @RequestBody ParkingLot parkingLot) {
         return ResultVO.success(employeeService.addEmployeeNewParkingLot(id, parkingLot));
@@ -89,6 +94,11 @@ public class EmployeeController {
     @PostMapping("/employees")
     public ResultVO<Employee> createEmployee(@RequestBody Employee employee){
         return ResultVO.success(employeeService.createEmployee(employee));
+    }
+
+    @PutMapping("/employees/{employeeId}")
+    public ResultVO<Employee> updateEmployeeById(@PathVariable String employeeId,@RequestBody Employee employee){
+        return ResultVO.success(employeeService.updateEmployeeById(employeeId,employee));
     }
 
 }
