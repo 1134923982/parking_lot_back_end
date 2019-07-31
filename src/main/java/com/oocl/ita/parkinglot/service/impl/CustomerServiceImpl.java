@@ -1,10 +1,14 @@
 package com.oocl.ita.parkinglot.service.impl;
 
+import com.oocl.ita.parkinglot.enums.CodeMsgEnum;
+import com.oocl.ita.parkinglot.enums.OrdersStatusEnum;
 import com.oocl.ita.parkinglot.exception.ParkingLotException;
+import com.oocl.ita.parkinglot.model.Customer;
 import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.repository.CustomerRepository;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
 import com.oocl.ita.parkinglot.service.CustomerService;
+import com.oocl.ita.parkinglot.vo.OrdersVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,4 +48,37 @@ public class CustomerServiceImpl implements CustomerService{
         }
     }
 
+    @Override
+    public Orders updateOrdersStatus(String customerId, String orderId, int status) {
+        boolean isOrderOwner = doesTheCustomerOwnTheOrder(customerId, orderId);
+        Orders orders = ordersRepository.getOne(orderId);
+        boolean isValidStatus = isValidWaitingForUpdateStatus(orders, status);
+
+        if (isOrderOwner && isValidStatus) {
+            orders.setStatus(OrdersStatusEnum.FETCH_ORDER_CUSTOMER_CONFIRMED.ordinal());
+            ordersRepository.save(orders);
+            return orders;
+        }
+
+        throw new ParkingLotException(CodeMsgEnum.ORDER_STATUS_ERROR);
+    }
+
+    @Override
+    public Boolean doesTheCustomerOwnTheOrder(String customerId, String orderId) {
+        customerRepository.findById(customerId).orElseThrow(() -> new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR));
+        Orders orders = ordersRepository.findById(orderId).orElseThrow(() -> new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR));
+        return orders.getCustomer().getId().equals(customerId);
+    }
+
+    @Override
+    public Boolean isValidWaitingForUpdateStatus(Orders orders, int status) {
+        if (status == OrdersStatusEnum.FETCH_ORDER_CUSTOMER_CONFIRMED.ordinal()) {
+
+            boolean boyFetchedCarFromParkingLot = orders.getStatus() == OrdersStatusEnum.FETCH_ORDER_PICKED_UP_THE_CAR.ordinal();
+            boolean boyReturnedCar = orders.getStatus() == OrdersStatusEnum.FETCH_ORDER_COMPLETED.ordinal();
+            return boyFetchedCarFromParkingLot || boyReturnedCar;
+        }
+        /* 目前，除状态直接变更到确认完成外，状态只能递增 **/
+        return status - orders.getStatus() == 1;
+    }
 }

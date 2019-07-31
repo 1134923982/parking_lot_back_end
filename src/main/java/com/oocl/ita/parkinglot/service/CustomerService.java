@@ -2,6 +2,7 @@ package com.oocl.ita.parkinglot.service;
 
 import com.oocl.ita.parkinglot.model.Customer;
 import com.oocl.ita.parkinglot.model.Orders;
+import com.oocl.ita.parkinglot.vo.OrdersVO;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -31,4 +32,10 @@ public interface CustomerService {
      * @return 创建的订单
      */
     Orders createCustomerOrders(String customerId, Orders orders);
+
+    Orders updateOrdersStatus(String customerId, String orderId, int status);
+
+    Boolean isValidWaitingForUpdateStatus(Orders orders, int status);
+
+    Boolean doesTheCustomerOwnTheOrder(String customerId, String orderId);
 }
