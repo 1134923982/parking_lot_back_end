@@ -1,6 +1,7 @@
 package com.oocl.ita.parkinglot.model;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -23,21 +24,19 @@ public class Orders {
     @ManyToOne
     private ParkingLot parkingLot;
 
-
     private long parkingTime;
 
-
     private long fetchingTime;
-
 
     @OneToOne
     @JoinColumn(name = "parkingBoyId")
     private Employee parkingBoy;
 
-
     @OneToOne
     @JoinColumn(name = "fetchingBoyId")
     private Employee fetchingBoy;
+
+    private BigDecimal price;
 
     public Orders() {
     }
@@ -144,6 +143,14 @@ public class Orders {
 
     public void setFetchingBoy(Employee fetchingBoy) {
         this.fetchingBoy = fetchingBoy;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     @Override
