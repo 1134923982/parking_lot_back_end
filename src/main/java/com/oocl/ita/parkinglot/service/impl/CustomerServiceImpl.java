@@ -81,4 +81,19 @@ public class CustomerServiceImpl implements CustomerService{
         /* 目前，除状态直接变更到确认完成外，状态只能递增 **/
         return status - orders.getStatus() == 1;
     }
+
+    @Override
+    public double getBudgetPriceByParkingTime(long parkingTime, long fetchingTime, String position){
+        if(parkingTime == 0 || fetchingTime == 0 || fetchingTime <= parkingTime){
+            throw new ParkingLotException(CodeMsgEnum.PARAMETER_ERROR);
+        } else {
+            double secondsPerMimute = 60;
+            double mimutesPerHour = 60;
+            double parkingHours = (fetchingTime - parkingTime)/(secondsPerMimute * mimutesPerHour);
+            double pricePerHour = 5;
+            double pricePerDay = 50;
+            double parkingDay = Math.floor(parkingHours/24);
+            return Math.round(parkingDay * pricePerDay + pricePerHour * (parkingHours/24 - parkingDay));
+        }
+    }
 }

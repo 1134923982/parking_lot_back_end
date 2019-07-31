@@ -38,4 +38,6 @@ public interface CustomerService {
     Boolean isValidWaitingForUpdateStatus(Orders orders, int status);
 
     Boolean doesTheCustomerOwnTheOrder(String customerId, String orderId);
+
+    double getBudgetPriceByParkingTime (long parkingTime, long fetchingTime, String position);
 }
