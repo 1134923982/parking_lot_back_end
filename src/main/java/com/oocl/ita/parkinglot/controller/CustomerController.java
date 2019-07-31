@@ -55,7 +55,7 @@ public class CustomerController {
     }
 
     @GetMapping("/customers/orders/price")
-    public ResultVO getBudgetPrice (@RequestParam(value = "parkingTime") long parkingTime, @RequestParam(value = "fetchingTime") long fetchingTime ,@RequestParam(value = "position", defaultValue = "ZHA") String position) {
-        return ResultVO.success(customerService.getBudgetPriceByParkingTime(parkingTime,fetchingTime,position));
+    public ResultVO getComparisonPrice (@RequestParam(value = "parkingTime") long parkingTime, @RequestParam(value = "fetchingTime") long fetchingTime ,@RequestParam(value = "position", defaultValue = "ZHA") String position) {
+        return ResultVO.success(customerService.getComparisonPrice(parkingTime,fetchingTime,position));
     }
 }

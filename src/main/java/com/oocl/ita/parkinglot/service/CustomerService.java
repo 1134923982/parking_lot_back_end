@@ -5,6 +5,7 @@ import com.oocl.ita.parkinglot.model.Orders;
 import com.oocl.ita.parkinglot.vo.OrdersVO;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Gordon
@@ -39,5 +40,5 @@ public interface CustomerService {
 
     Boolean doesTheCustomerOwnTheOrder(String customerId, String orderId);
 
-    double getBudgetPriceByParkingTime (long parkingTime, long fetchingTime, String position);
+    Map<String,Double> getComparisonPrice (long parkingTime, long fetchingTime, String position);
 }
