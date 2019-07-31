@@ -18,6 +18,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,11 +31,9 @@ public class SwaggerConfig {
     public Docket customDocket(){
         ParameterBuilder ticketPar = new ParameterBuilder();
         List<Parameter> pars = new ArrayList<Parameter>();
-        ticketPar.name("Authorization").description("token")
-                .modelRef(new ModelRef("string")).parameterType("header")
-                .required(false).build();
+        ticketPar.name("token").description("token")
+                .modelRef(new ModelRef("string")).parameterType("header").required(false).build();
         pars.add(ticketPar.build());
-
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.any())
