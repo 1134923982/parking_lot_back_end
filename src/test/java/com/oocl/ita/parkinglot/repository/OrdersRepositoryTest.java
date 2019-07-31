@@ -17,7 +17,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@Ignore
+
 public class OrdersRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
@@ -44,7 +44,7 @@ public class OrdersRepositoryTest {
         Orders order2 = new Orders("2",2,customer,"","");
         order2.setFetchingBoy(parkingBoy2);
         order2.setId("2");
-        Orders order3 = new Orders("3",6,customer,"","");
+        Orders order3 = new Orders("3",7,customer,"","");
         order3.setFetchingBoy(parkingBoy2);
         order3.setId("3");
 
