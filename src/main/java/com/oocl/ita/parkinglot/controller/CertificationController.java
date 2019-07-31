@@ -32,7 +32,7 @@ public class CertificationController {
         }
         Employee reEmployee = new Employee();
         BeanUtils.copyProperties(certificationService.login(employee)
-                ,reEmployee,"name","password","idCardNumber","gender","telephone","managedId");
+                ,reEmployee,"password","idCardNumber","gender","telephone","managedId");
         return ResultVO.success(JwtToken.encode(reEmployee));
     }
 
