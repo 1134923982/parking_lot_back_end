@@ -220,6 +220,7 @@ public class EmployeeServiceImplTest {
     public void should_return_employee_when_create_employee() {
         Employee employee = new Employee();
         employee.setName("zhangsan");
+        employee.setPassword("123");
         when(employeeRepository.save(employee)).thenReturn(employee);
         when(smsService.sendRegisterMessage(any(RegisterMessageDTO.class))).thenReturn(true);
         assertEquals(employee, employeeService.createEmployee(employee));
