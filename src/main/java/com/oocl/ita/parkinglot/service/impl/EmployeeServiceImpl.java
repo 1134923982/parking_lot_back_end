@@ -255,10 +255,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee newEmployee = employeeRepository.findByTelephone(employee.getTelephone());
         if (newEmployee == null && employee.getRole() < RoleEnum.admin.ordinal()) {
             String role = employee.getRole() == RoleEnum.parkingBoy.ordinal() ? "parkingBoy" : "manager";
-            smsService.sendRegisterMessage(new RegisterMessageDTO(employee.getTelephone(), employee.getPassword(), role));
-            employee.setPassword(MD5Util.encrypt(employee.getPassword()));
 
-            return employeeRepository.save(employee);
+            // just for debug
+            String password = employee.getPassword();
+            employee.setPassword(MD5Util.encrypt(password));
+            employeeRepository.save(employee);
+            smsService.sendRegisterMessage(new RegisterMessageDTO(employee.getTelephone(), password, role));
+            return employee;
         } else {
             throw new ParkingLotException(CREATE_ERROR);
         }
