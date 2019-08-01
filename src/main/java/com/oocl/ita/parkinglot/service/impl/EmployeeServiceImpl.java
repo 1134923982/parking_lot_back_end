@@ -257,6 +257,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             String role = employee.getRole() == RoleEnum.parkingBoy.ordinal() ? "parkingBoy" : "manager";
             smsService.sendRegisterMessage(new RegisterMessageDTO(employee.getTelephone(), employee.getPassword(), role));
             employee.setPassword(MD5Util.encrypt(employee.getPassword()));
+
             return employeeRepository.save(employee);
         } else {
             throw new ParkingLotException(CREATE_ERROR);
