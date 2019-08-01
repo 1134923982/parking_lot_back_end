@@ -12,7 +12,9 @@ public enum CodeMsgEnum implements CodeEnum{
     PARAMETER_ERROR(507,"参数错误"),
     CREATE_ERROR(508,"新增失败"),
 
-    ORDER_STATUS_ERROR(101, "订单状态错误");
+    ORDER_STATUS_ERROR(101, "订单状态错误"),
+
+    ENCRYPT_ERROR(701, "MD5加密出错");
 
     private int code;
     private String msg;

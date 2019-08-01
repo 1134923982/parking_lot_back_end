@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.oocl.ita.parkinglot.enums.CodeMsgEnum.CREATE_ERROR;
+import static com.oocl.ita.parkinglot.enums.OrdersStatusEnum.*;
 
 /**
  * @author Gordon
@@ -55,7 +56,7 @@ public class CustomerServiceImpl implements CustomerService{
         boolean isValidStatus = isValidWaitingForUpdateStatus(orders, status);
 
         if (isOrderOwner && isValidStatus) {
-            orders.setStatus(OrdersStatusEnum.FETCH_ORDER_CUSTOMER_CONFIRMED.ordinal());
+            orders.setStatus(FETCH_ORDER_CUSTOMER_CONFIRMED.ordinal());
             ordersRepository.save(orders);
             return orders;
         }
@@ -72,10 +73,10 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     public Boolean isValidWaitingForUpdateStatus(Orders orders, int status) {
-        if (status == OrdersStatusEnum.FETCH_ORDER_CUSTOMER_CONFIRMED.ordinal()) {
+        if (status == FETCH_ORDER_CUSTOMER_CONFIRMED.ordinal()) {
 
-            boolean boyFetchedCarFromParkingLot = orders.getStatus() == OrdersStatusEnum.FETCH_ORDER_PICKED_UP_THE_CAR.ordinal();
-            boolean boyReturnedCar = orders.getStatus() == OrdersStatusEnum.FETCH_ORDER_COMPLETED.ordinal();
+            boolean boyFetchedCarFromParkingLot = orders.getStatus() == FETCH_ORDER_PICKED_UP_THE_CAR.ordinal();
+            boolean boyReturnedCar = orders.getStatus() == FETCH_ORDER_COMPLETED.ordinal();
             return boyFetchedCarFromParkingLot || boyReturnedCar;
         }
         /* 目前，除状态直接变更到确认完成外，状态只能递增 **/

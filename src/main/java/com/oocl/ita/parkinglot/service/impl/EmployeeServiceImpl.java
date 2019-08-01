@@ -1,5 +1,6 @@
 package com.oocl.ita.parkinglot.service.impl;
 
+import com.oocl.ita.parkinglot.dto.RegisterMessageDTO;
 import com.oocl.ita.parkinglot.enums.CodeMsgEnum;
 import com.oocl.ita.parkinglot.enums.OrdersStatusEnum;
 import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
@@ -12,6 +13,7 @@ import com.oocl.ita.parkinglot.repository.EmployeeRepository;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
 import com.oocl.ita.parkinglot.repository.ParkingLotRepository;
 import com.oocl.ita.parkinglot.service.EmployeeService;
+import com.oocl.ita.parkinglot.service.SmsService;
 import com.oocl.ita.parkinglot.utils.SecurityUtils;
 import com.oocl.ita.parkinglot.utils.converters.EmployeeToEmployeeVOConverter;
 import com.oocl.ita.parkinglot.vo.EmployeesVO;
@@ -40,6 +42,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private OrdersRepository ordersRepository;
+
+    @Autowired
+    private SmsService smsService;
 
     @Override
     public PageVO<ParkingLot> getEmployeeAllParkingLots(String Id) {
@@ -224,6 +229,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee createEmployee(Employee employee) {
         Employee newEmployee = employeeRepository.findByTelephone(employee.getTelephone());
         if (newEmployee == null && employee.getRole() < RoleEnum.admin.ordinal()) {
+            String role = employee.getRole() == RoleEnum.parkingBoy.ordinal() ? "parkingBoy" : "manager";
+            smsService.sendRegisterMessage(new RegisterMessageDTO(employee.getTelephone(), employee.getPassword(), role));
             return employeeRepository.save(employee);
         } else {
             throw new ParkingLotException(CREATE_ERROR);

@@ -1,5 +1,6 @@
 package com.oocl.ita.parkinglot.service.impl;
 
+import com.oocl.ita.parkinglot.dto.RegisterMessageDTO;
 import com.oocl.ita.parkinglot.enums.CodeMsgEnum;
 import com.oocl.ita.parkinglot.enums.OrdersStatusEnum;
 import com.oocl.ita.parkinglot.enums.ParkingLotStatusEnum;
@@ -10,6 +11,7 @@ import com.oocl.ita.parkinglot.model.ParkingLot;
 import com.oocl.ita.parkinglot.repository.EmployeeRepository;
 import com.oocl.ita.parkinglot.repository.OrdersRepository;
 import com.oocl.ita.parkinglot.service.EmployeeService;
+import com.oocl.ita.parkinglot.service.SmsService;
 import com.oocl.ita.parkinglot.vo.PageVO;
 import com.oocl.ita.parkinglot.vo.ParkingLotVO;
 import org.junit.Test;
@@ -40,6 +42,9 @@ public class EmployeeServiceImplTest {
 
     @Autowired
     private EmployeeService employeeService;
+
+    @MockBean
+    private SmsService smsService;
 
 
     @Test
@@ -216,6 +221,7 @@ public class EmployeeServiceImplTest {
         Employee employee = new Employee();
         employee.setName("zhangsan");
         when(employeeRepository.save(employee)).thenReturn(employee);
+        when(smsService.sendRegisterMessage(any(RegisterMessageDTO.class))).thenReturn(true);
         assertEquals(employee, employeeService.createEmployee(employee));
     }
 
