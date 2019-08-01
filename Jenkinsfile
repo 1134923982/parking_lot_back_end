@@ -16,7 +16,7 @@ pipeline {
       steps {
         sh '''cp /root/.jenkins/workspace/parking_lot_back_end_dev/build/libs/parkinglot-0.0.1-SNAPSHOT.jar /workspace/BackEnd/dev.jar
 cd /workspace/BackEnd
-p=`jps | grep jar | grep -P \'\\d+\' -o`
+p=`jps -l | grep dev | grep -P \'\\d+\' -o`
 sudo kill -9 $p
 JENKINS_NODE_COOKIE=dontKillMe
 nohup java -jar dev.jar >run.txt 2>&1 &
